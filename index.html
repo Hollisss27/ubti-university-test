@@ -1,0 +1,3472 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>别估分了，先测测你的 UBTI。</title>
+    <style>
+      :root {
+        --bg: #f7fbf6;
+        --card: #fffefc;
+        --line: #d9e9dc;
+        --line-strong: #cfe3d3;
+        --text: #243029;
+        --muted: #6f7f74;
+        --green: #4f6f58;
+        --accent: #2f8f42;
+        --blue: #7b9b70;
+        --shadow: 0 24px 70px rgba(75, 105, 82, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "PingFang SC",
+          "Hiragino Sans GB",
+          "Microsoft YaHei",
+          Arial,
+          sans-serif;
+        background:
+          radial-gradient(circle at 12% 12%, rgba(83, 126, 91, 0.07), transparent 28%),
+          radial-gradient(circle at 88% 28%, rgba(83, 126, 91, 0.05), transparent 30%),
+          var(--bg);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .shell {
+        width: min(720px, calc(100vw - 36px));
+        margin: 24px auto 0;
+        min-height: calc(100vh - 24px);
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line-strong);
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 18px 48px rgba(75, 105, 82, 0.1);
+        padding: 22px 20px 36px;
+      }
+
+      body.intro-mode .shell {
+        width: min(920px, calc(100vw - 72px));
+        min-height: 560px;
+        margin: 58px auto 0;
+        border-radius: 18px;
+        padding: 54px 56px;
+      }
+
+      body.result-mode .shell {
+        width: min(1040px, calc(100vw - 72px));
+        padding: 26px;
+      }
+
+      body.share-mode .shell {
+        width: min(430px, calc(100vw - 24px));
+        padding: 10px;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      body.quiz-mode .shell {
+        width: min(1060px, calc(100vw - 64px));
+      }
+
+      .intro {
+        display: flex;
+        min-height: 500px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px 0;
+      }
+
+      .intro h1 {
+        margin: 0;
+        max-width: 820px;
+        font-size: 48px;
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      .primary {
+        margin-top: 30px;
+        height: 44px;
+        padding: 0 22px;
+        border: 0;
+        border-radius: 12px;
+        background: #4f6f58;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .disclaimer {
+        margin: 16px 0 0;
+        color: #5b6d60;
+        font-size: 17px;
+        line-height: 1.45;
+        font-weight: 750;
+      }
+
+      .intro .primary {
+        margin-top: 20px;
+      }
+
+      .intro-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      .intro-actions .primary {
+        margin-top: 0;
+        height: 48px;
+        padding: 0 28px;
+        font-size: 17px;
+      }
+
+      .intro-actions .secondary {
+        height: 30px;
+        padding: 0 13px;
+        border-color: rgba(159, 187, 167, 0.62);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .credits {
+        margin-top: 34px;
+        text-align: center;
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.65;
+        font-weight: 650;
+      }
+
+      .credits a {
+        color: #06e;
+        text-decoration: underline;
+      }
+
+      .vibe-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+      }
+
+      .image-zone {
+        position: relative;
+        height: 430px;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 86% 90%, rgba(79, 111, 88, 0.08), transparent 28%),
+          #fff;
+      }
+
+      .poster-title {
+        position: absolute;
+        top: 18px;
+        left: 0;
+        right: 0;
+        padding: 0 104px;
+        z-index: 3;
+        text-align: center;
+        color: rgba(35, 35, 35, 0.72);
+        font-size: 24px;
+        line-height: 1.1;
+        font-weight: 850;
+        white-space: nowrap;
+      }
+
+      .poster-cn {
+        position: absolute;
+        top: 58px;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        text-align: center;
+        color: rgba(34, 34, 34, 0.82);
+        font-size: 44px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .poster-code {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        text-align: center;
+        color: var(--accent);
+        font-size: 46px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .rarity {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 4;
+        min-width: 102px;
+        height: 34px;
+        padding: 0 12px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--blue);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 850;
+      }
+
+      .rare-common {
+        background: #2b8fd8;
+      }
+
+      .rare-uncommon {
+        background: #64748b;
+      }
+
+      .rare-rare {
+        background: #8b5cf6;
+      }
+
+      .rare-ultra {
+        background: #f0526b;
+      }
+
+      .poly-person {
+        position: absolute;
+        left: 50%;
+        bottom: -16px;
+        width: 206px;
+        height: 206px;
+        transform: translateX(-50%);
+      }
+
+      .avatar-image {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        z-index: 1;
+        width: min(90%, 340px);
+        height: 250px;
+        object-fit: contain;
+        transform: translateX(-50%);
+      }
+
+      .progress-row {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+        padding: 16px 0 12px;
+        background: rgba(255, 255, 255, 0.92);
+        border-bottom: 1px solid rgba(207, 227, 211, 0.72);
+        backdrop-filter: blur(8px);
+      }
+
+      .progress-track {
+        height: 8px;
+        border-radius: 999px;
+        background: #eaf2ed;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: #9fbba7;
+        transition: width 0.2s ease;
+      }
+
+      .progress-count {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .question-card {
+        padding: 0;
+        margin-bottom: 22px;
+        scroll-margin-top: 82px;
+      }
+
+      .question-card.missing-question {
+        border-radius: 14px;
+        animation: missingPulse 1.2s ease;
+      }
+
+      @keyframes missingPulse {
+        0% {
+          background: rgba(240, 82, 107, 0);
+          box-shadow: 0 0 0 0 rgba(240, 82, 107, 0);
+        }
+        28% {
+          background: rgba(240, 82, 107, 0.08);
+          box-shadow: 0 0 0 3px rgba(240, 82, 107, 0.16);
+        }
+        100% {
+          background: rgba(240, 82, 107, 0);
+          box-shadow: 0 0 0 0 rgba(240, 82, 107, 0);
+        }
+      }
+
+      .question-head {
+        margin-bottom: 8px;
+      }
+
+      .question-title {
+        margin: 0 0 13px;
+        font-size: 18px;
+        line-height: 1.42;
+        font-weight: 850;
+      }
+
+      .options {
+        display: grid;
+        gap: 9px;
+      }
+
+      .option {
+        -webkit-tap-highlight-color: transparent;
+        appearance: none;
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 16px;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.78);
+        cursor: pointer;
+      }
+
+      .option:active {
+        border-color: #bac8a8;
+        background: #f8fbf3;
+        box-shadow: 0 0 0 2px rgba(122, 143, 92, 0.08);
+      }
+
+      .option:hover {
+        border-color: #adcbb4;
+        background: #fbfffb;
+      }
+
+      .option.selected {
+        border-color: #b8c4a1;
+        background: #fbfcf7;
+        box-shadow: 0 0 0 2px rgba(122, 143, 92, 0.09), 0 6px 14px rgba(79, 111, 88, 0.05);
+      }
+
+      .option.selected:active {
+        border-color: #b8c4a1;
+        background: #fbfcf7;
+      }
+
+      .option.selected .radio {
+        border-color: #8c9b70;
+        background: #fff;
+        box-shadow: none;
+      }
+
+      .submit-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px 0 4px;
+      }
+
+      .submit-row .primary,
+      .submit-row .secondary {
+        margin-top: 0;
+        height: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+
+      .find-missing {
+        min-width: 104px;
+      }
+
+      .primary:disabled {
+        background: #cbd8ce;
+        color: #f6faf7;
+        cursor: not-allowed;
+        box-shadow: none;
+        opacity: 1;
+      }
+
+      .radio {
+        position: relative;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1.5px solid #7d877f;
+        background: #fff;
+      }
+
+      .option.selected .radio::after {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        border-radius: 50%;
+        background: #8c9b70;
+      }
+
+      .letter {
+        display: none;
+      }
+
+      .option-text {
+        display: block;
+        color: #4f5f56;
+        font-size: 16px;
+        line-height: 1.35;
+        font-weight: 400;
+        text-align: left;
+      }
+
+      .result-layout {
+        display: block;
+      }
+
+      .result-hero {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .result-hero .vibe-card {
+        max-width: 880px;
+        width: 100%;
+        margin: 0 auto;
+        border-radius: 18px;
+      }
+
+      .result-hero-line {
+        max-width: 880px;
+        width: 100%;
+        margin: -2px auto 0;
+        padding: 0 20px;
+        color: #50688e;
+        font-size: 17px;
+        line-height: 1.55;
+        font-weight: 850;
+      }
+
+      .result-share-row {
+        max-width: 880px;
+        width: 100%;
+        margin: 8px auto 4px;
+      }
+
+      .result-share-row .primary {
+        width: 100%;
+        margin-top: 0;
+      }
+
+      .result-panel,
+      .result-section {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.84);
+        padding: 22px;
+      }
+
+      .result-panel h2 {
+        margin: 8px 0 16px;
+        font-size: 44px;
+        line-height: 1;
+      }
+
+      .result-label {
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .result-badge {
+        display: inline-flex;
+        align-items: center;
+        margin: 4px 0 18px;
+        min-height: 40px;
+        padding: 0 18px;
+        border-radius: 999px;
+        background: #edf6ef;
+        border: 1px solid var(--line-strong);
+        color: var(--green);
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .result-lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.7;
+        font-weight: 500;
+      }
+
+      .result-section {
+        margin-top: 20px;
+      }
+
+      .result-section h3 {
+        margin: 0 0 18px;
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 900;
+      }
+
+      .author-note {
+        overflow: hidden;
+        padding: 0;
+      }
+
+      .author-note-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 68px;
+        padding: 0 22px;
+      }
+
+      .author-note-head h3 {
+        margin: 0;
+      }
+
+      .author-note-toggle {
+        min-width: 56px;
+        height: 36px;
+        padding: 0 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: #edf6ef;
+        color: var(--green);
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .author-note-body {
+        display: grid;
+        gap: 14px;
+        padding: 20px 22px 22px;
+        border-top: 1px solid var(--line);
+      }
+
+      .author-note.collapsed .author-note-body {
+        display: none;
+      }
+
+      .author-note-body .result-copy {
+        line-height: 1.9;
+      }
+
+      .result-copy {
+        margin: 0;
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.9;
+        font-weight: 400;
+      }
+
+      .result-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      .result-actions .primary,
+      .result-actions .secondary {
+        margin-top: 0;
+        height: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+
+      .radar-list {
+        display: grid;
+        grid-template-columns: minmax(300px, 390px) minmax(360px, 1fr);
+        gap: 30px;
+        align-items: center;
+      }
+
+      .radar-visual {
+        display: grid;
+        place-items: center;
+        min-width: 0;
+        padding: 8px 18px 6px 28px;
+      }
+
+      .radar-chart {
+        width: min(100%, 310px);
+        height: auto;
+        overflow: visible;
+      }
+
+      .radar-axis,
+      .radar-grid {
+        stroke: #d5dfd8;
+        stroke-width: 1.2;
+        fill: none;
+      }
+
+      .radar-grid {
+        fill: rgba(247, 251, 246, 0.48);
+      }
+
+      .radar-area {
+        fill: rgba(79, 111, 88, 0.34);
+        stroke: #4f6f58;
+        stroke-width: 3;
+        stroke-linejoin: round;
+      }
+
+      .radar-dot {
+        fill: #4f6f58;
+        stroke: #fff;
+        stroke-width: 2;
+      }
+
+      .radar-label {
+        fill: #2b332d;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .radar-panel {
+        display: grid;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .radar-item {
+        display: grid;
+        grid-template-columns: 78px minmax(180px, 1fr) 34px;
+        gap: 12px;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px dashed rgba(79, 111, 88, 0.22);
+      }
+
+      .radar-item:last-child {
+        border-bottom: 0;
+      }
+
+      .radar-name {
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 900;
+      }
+
+      .radar-track {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #edf5ef;
+        border: 1px solid #d9e9dc;
+      }
+
+      .radar-fill {
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: #4f6f58;
+      }
+
+      .radar-score {
+        min-width: 34px;
+        color: var(--green);
+        font-size: 15px;
+        font-weight: 950;
+        text-align: right;
+      }
+
+      .radar-note {
+        grid-column: 1 / -1;
+        margin: -4px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 500;
+      }
+
+      .share-layout {
+        display: grid;
+        justify-items: center;
+        gap: 14px;
+      }
+
+      .share-poster-wrap {
+        position: relative;
+        width: min(390px, 100%);
+        height: 660px;
+        min-height: 0;
+      }
+
+      .poster-image {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        width: 100%;
+        height: 100%;
+        border-radius: 18px;
+        object-fit: contain;
+        pointer-events: none;
+        user-select: auto;
+        -webkit-user-drag: auto;
+        box-shadow: 0 22px 54px rgba(75, 105, 82, 0.18);
+      }
+
+      .poster-image.ready {
+        display: block;
+      }
+
+      .share-poster-wrap.poster-ready #sharePoster {
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .share-poster-wrap.poster-ready .poster-image {
+        pointer-events: auto;
+      }
+
+      .poster-status {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        z-index: 21;
+        display: none;
+        min-height: 28px;
+        padding: 0 12px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.84);
+        border: 1px solid rgba(207, 227, 211, 0.9);
+        color: #5d6d62;
+        font-size: 12px;
+        font-weight: 850;
+        transform: translateX(-50%);
+      }
+
+      .poster-status.visible {
+        display: inline-flex;
+      }
+
+      .share-poster {
+        --share-card-x: 20px;
+        --share-card-pad: 18px;
+        position: relative;
+        overflow: hidden;
+        width: min(390px, 100%);
+        height: 660px;
+        min-height: 0;
+        border: 1px solid #d5e6d7;
+        border-radius: 18px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(247, 251, 246, 0.88)),
+          radial-gradient(circle at 72% 18%, rgba(79, 111, 88, 0.12), transparent 32%),
+          #fbfdf8;
+        box-shadow: 0 22px 54px rgba(75, 105, 82, 0.18);
+      }
+
+      .share-poster::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(79, 111, 88, 0.18);
+        border-radius: 14px;
+        pointer-events: none;
+      }
+
+      .share-top {
+        position: relative;
+        z-index: 2;
+        padding: 22px 22px 0;
+      }
+
+      .share-kicker {
+        margin: 0;
+        color: rgba(36, 48, 41, 0.62);
+        font-size: 13px;
+        line-height: 1.2;
+        font-weight: 850;
+      }
+
+      .share-code {
+        margin: 8px 0 0;
+        color: var(--accent);
+        font-size: 42px;
+        line-height: 0.95;
+        font-weight: 950;
+        letter-spacing: 0;
+      }
+
+      .share-cn {
+        margin: 4px 0 0;
+        color: rgba(34, 34, 34, 0.86);
+        font-size: 38px;
+        line-height: 1;
+        font-weight: 950;
+      }
+
+      .share-visual {
+        position: relative;
+        height: 226px;
+        min-height: 0;
+        margin: 12px 0 0;
+      }
+
+      .share-visual::after {
+        content: "";
+        position: absolute;
+        left: 48px;
+        right: 48px;
+        bottom: 14px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(79, 111, 88, 0.12);
+        filter: blur(2px);
+      }
+
+      .share-avatar {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        z-index: 1;
+        max-width: min(78%, 260px);
+        max-height: 92%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        transform: translateX(-50%);
+      }
+
+      .share-match {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        min-width: 96px;
+        min-height: 30px;
+        padding: 0 12px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 999px;
+        background: #4f6f58;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 950;
+        white-space: nowrap;
+        box-shadow: 0 9px 20px rgba(79, 111, 88, 0.18);
+      }
+
+      .share-match.rare-common {
+        background: #2b8fd8;
+      }
+
+      .share-match.rare-uncommon {
+        background: #64748b;
+      }
+
+      .share-match.rare-rare {
+        background: #8b5cf6;
+      }
+
+      .share-match.rare-ultra {
+        background: #f0526b;
+      }
+
+      .share-body {
+        position: relative;
+        z-index: 2;
+        box-sizing: border-box;
+        min-height: 174px;
+        margin: -16px var(--share-card-x) 94px;
+        padding: 17px var(--share-card-pad) 16px;
+        border: 1px solid rgba(207, 227, 211, 0.92);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .share-name {
+        margin: 0 0 8px;
+        color: var(--text);
+        font-size: 20px;
+        line-height: 1.18;
+        font-weight: 950;
+      }
+
+      .share-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 0 0 8px;
+      }
+
+      .share-title-row .share-name {
+        margin: 0;
+        min-width: 0;
+      }
+
+      .share-line {
+        margin: 0;
+        color: #4f5f56;
+        font-size: 15px;
+        line-height: 1.62;
+        font-weight: 400;
+      }
+
+      .share-scene {
+        margin-top: 11px;
+        padding: 9px 0 4px;
+        border-top: 1px dashed rgba(79, 111, 88, 0.20);
+      }
+
+      .share-scene-title {
+        margin: 0 0 9px;
+        color: #34443a;
+        font-size: 13.5px;
+        line-height: 1.15;
+        font-weight: 950;
+      }
+
+      .share-scene-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .share-scene-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        min-height: 25px;
+        padding: 0 8px;
+        border: 1px solid #dbeadd;
+        border-radius: 999px;
+        background: #f3faf4;
+        color: #4f6f58;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .share-qr-area {
+        position: absolute;
+        left: calc(var(--share-card-x) + var(--share-card-pad));
+        right: var(--share-card-x);
+        bottom: 22px;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: 1fr 74px;
+        gap: 12px;
+        align-items: center;
+        padding-top: 10px;
+        border-top: 1px dashed rgba(79, 111, 88, 0.34);
+        text-align: left;
+      }
+
+      .share-footer-title {
+        margin: 0 0 4px;
+        color: var(--text);
+        font-size: 16px;
+        line-height: 1.25;
+        font-weight: 950;
+      }
+
+      .share-footer-text {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+        font-weight: 500;
+      }
+
+      .share-qr {
+        width: 74px;
+        height: 74px;
+        border: 6px solid #fff;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 8px 18px rgba(75, 105, 82, 0.12);
+      }
+
+      .share-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: min(390px, 100%);
+        gap: 10px;
+      }
+
+      .share-actions .primary,
+      .share-actions .secondary {
+        width: 100%;
+        margin-top: 0;
+      }
+
+      .share-actions .primary {
+        grid-column: 1 / -1;
+      }
+
+      .copy-fallback {
+        width: min(390px, 100%);
+        margin: -4px 0 0;
+        padding: 10px 12px;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.86);
+        color: #4f5f56;
+        font-size: 12px;
+        line-height: 1.5;
+        font-weight: 650;
+        word-break: break-all;
+        user-select: text;
+        -webkit-user-select: text;
+      }
+
+      .poster-preview {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: start center;
+        padding: max(28px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+        background: rgba(20, 31, 24, 0.58);
+      }
+
+      .poster-preview.hidden {
+        display: none;
+      }
+
+      .poster-preview-panel {
+        width: min(390px, 100%);
+        display: grid;
+        gap: 12px;
+      }
+
+      .poster-preview-head {
+        display: grid;
+        gap: 4px;
+        text-align: center;
+        color: #fff;
+      }
+
+      .poster-preview-title {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.25;
+        font-weight: 950;
+      }
+
+      .poster-preview-subtitle {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 13px;
+        line-height: 1.45;
+        font-weight: 650;
+      }
+
+      .poster-preview img {
+        display: block;
+        width: 100%;
+        max-height: min(72svh, 720px);
+        box-sizing: border-box;
+        padding: 8px 0;
+        object-fit: contain;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 18px 54px rgba(0, 0, 0, 0.24);
+      }
+
+      .poster-preview-tip {
+        margin: 0;
+        color: #fff;
+        text-align: center;
+        font-size: 14px;
+        line-height: 1.5;
+        font-weight: 800;
+      }
+
+      .poster-preview-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .poster-preview-panel.wechat-save .poster-preview-actions {
+        grid-template-columns: minmax(180px, 250px);
+        justify-content: center;
+      }
+
+      .poster-preview-actions .primary,
+      .poster-preview-actions .secondary {
+        margin-top: 0;
+        width: 100%;
+      }
+
+      .secondary {
+        height: 46px;
+        padding: 0 18px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--text);
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          width: calc(100vw - 24px);
+          margin-top: 12px;
+          min-height: calc(100vh - 12px);
+          padding: 16px 12px 28px;
+          border-radius: 16px;
+        }
+
+        body.intro-mode .shell {
+          width: calc(100vw - 24px);
+          min-height: auto;
+          margin-top: 34px;
+          padding: 48px 26px 40px;
+          align-self: center;
+        }
+
+        body.result-mode .shell {
+          width: calc(100vw - 24px);
+          padding: 14px 10px 28px;
+        }
+
+        body.share-mode .shell {
+          width: min(430px, calc(100vw - 16px));
+          margin-top: 8px;
+          padding: 0;
+        }
+
+        body.quiz-mode .shell {
+          width: calc(100vw - 24px);
+        }
+
+        .intro {
+          grid-template-columns: 1fr;
+        }
+
+        .result-hero {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .intro {
+          min-height: auto;
+          padding: 0;
+        }
+
+        .intro h1 {
+          max-width: 360px;
+          font-size: 31px;
+          line-height: 1.18;
+        }
+
+        .disclaimer {
+          font-size: 15px;
+        }
+
+        .primary {
+          margin-top: 24px;
+          height: 40px;
+          padding: 0 18px;
+          border-radius: 10px;
+          font-size: 15px;
+        }
+
+        .intro .primary {
+          margin-top: 18px;
+        }
+
+        .credits {
+          margin-top: 26px;
+          font-size: 13px;
+          line-height: 1.7;
+        }
+
+        .question-title {
+          margin-bottom: 12px;
+          font-size: 16px;
+          font-weight: 830;
+        }
+
+        .question-card {
+          margin-bottom: 20px;
+        }
+
+        .option {
+          grid-template-columns: 16px 1fr;
+          min-height: 42px;
+          gap: 8px;
+          padding: 0 12px;
+          border-radius: 11px;
+        }
+
+        .radio {
+          width: 14px;
+          height: 14px;
+        }
+
+        .letter {
+          font-size: 15px;
+        }
+
+        .option-text {
+          font-size: 15px;
+          font-weight: 400;
+        }
+
+        .image-zone {
+          height: 360px;
+        }
+
+        .poster-title {
+          font-size: 24px;
+          top: 16px;
+          padding: 0 88px;
+        }
+
+        .poster-cn {
+          font-size: 42px;
+          top: 56px;
+        }
+
+        .poster-code {
+          font-size: 40px;
+          top: 98px;
+        }
+
+        .poly-person {
+          width: 196px;
+          height: 196px;
+        }
+
+        .avatar-image {
+          width: min(88%, 280px);
+          height: 210px;
+        }
+
+        .result-panel h2 {
+          font-size: 32px;
+          line-height: 1.18;
+        }
+
+        .result-panel,
+        .result-section {
+          padding: 18px 16px;
+          border-radius: 16px;
+        }
+
+        .result-section h3 {
+          font-size: 20px;
+        }
+
+        .result-section.author-note {
+          padding: 18px 16px;
+        }
+
+        .result-copy,
+        .result-lead {
+          font-size: 15px;
+        }
+
+        .author-note-head {
+          padding: 0;
+        }
+
+        .author-note-body {
+          padding: 18px 0 0;
+        }
+
+        .radar-list {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .radar-visual {
+          padding: 6px 18px 0;
+        }
+
+        .radar-chart {
+          width: min(100%, 292px);
+        }
+
+        .radar-panel {
+          gap: 8px;
+        }
+
+        .radar-item {
+          grid-template-columns: 74px minmax(120px, 1fr) 30px;
+          gap: 8px;
+        }
+
+        .share-poster {
+          --share-card-x: 18px;
+          --share-card-pad: 16px;
+          width: min(390px, 100%);
+          height: 660px;
+          min-height: 0;
+          border-radius: 16px;
+        }
+
+        .share-poster-wrap { min-height: 0; height: 660px; }
+
+        .share-poster-wrap.poster-ready .poster-image { height: 100%; }
+
+        .share-top {
+          padding: 22px 22px 0;
+        }
+
+        .share-code {
+          font-size: 42px;
+        }
+
+        .share-cn {
+          font-size: 38px;
+        }
+
+        .share-visual {
+          height: 226px;
+          min-height: 0;
+          margin-top: 12px;
+        }
+
+        .share-avatar {
+          max-width: min(78%, 260px);
+          max-height: 92%;
+          width: auto;
+          height: auto;
+        }
+
+        .share-body {
+          min-height: 174px;
+          margin: -16px var(--share-card-x) 94px;
+          padding: 17px var(--share-card-pad) 16px;
+        }
+
+        .share-name {
+          font-size: 20px;
+        }
+
+        .share-match {
+          min-width: 90px;
+          min-height: 29px;
+          padding: 0 10px;
+          font-size: 13px;
+        }
+
+        .share-line {
+          font-size: 15px;
+          line-height: 1.62;
+        }
+
+        .share-scene {
+          margin-top: 11px;
+          padding: 9px 0 4px;
+        }
+
+        .share-scene-title {
+          margin-bottom: 9px;
+          font-size: 13.5px;
+        }
+
+        .share-scene-list {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 6px;
+        }
+
+        .share-scene-item {
+          justify-content: center;
+          min-width: 0;
+          min-height: 25px;
+          padding: 0 9px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 11px;
+          font-weight: 850;
+        }
+      }
+
+      @media (max-width: 430px) {
+        body {
+          background:
+            radial-gradient(circle at 8% 10%, rgba(83, 126, 91, 0.08), transparent 34%),
+            var(--bg);
+        }
+
+        .shell,
+        body.result-mode .shell {
+          width: calc(100vw - 16px);
+          margin-top: 8px;
+          min-height: calc(100svh - 8px);
+          padding: 14px 10px 24px;
+          border-radius: 14px;
+        }
+
+        body.intro-mode {
+          min-height: 100svh;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+        }
+
+        body.intro-mode .shell {
+          width: calc(100vw - 32px);
+          min-height: auto;
+          margin: 24px auto 0;
+          padding: 62px 22px 46px;
+          border-radius: 18px;
+          align-self: flex-start;
+        }
+
+        body.share-mode .shell {
+          width: 100vw;
+          margin-top: 0;
+          min-height: 100svh;
+          padding: 8px;
+        }
+
+        .intro {
+          min-height: auto;
+          padding: 0;
+          justify-content: center;
+        }
+
+        .intro h1 {
+          max-width: 350px;
+          font-size: clamp(30px, 8.6vw, 34px);
+          line-height: 1.18;
+        }
+
+        .disclaimer {
+          font-size: 15px;
+        }
+
+        .primary {
+          min-height: 44px;
+          margin-top: 22px;
+          padding: 0 20px;
+          border-radius: 10px;
+        }
+
+        .intro .primary {
+          margin-top: 18px;
+        }
+
+        .intro-actions {
+          width: auto;
+          gap: 11px;
+          margin-top: 18px;
+        }
+
+        .intro-actions .primary {
+          width: auto;
+          min-width: 116px;
+          height: 44px;
+          border-radius: 10px;
+          font-size: 16px;
+        }
+
+        .intro-actions .secondary {
+          width: auto;
+          min-width: 118px;
+          height: 30px;
+          border-radius: 999px;
+          font-size: 12px;
+        }
+
+        .credits {
+          width: min(274px, 100%);
+          margin-top: 26px;
+          font-size: 13px;
+          line-height: 1.65;
+        }
+
+        .progress-row {
+          gap: 10px;
+          margin-bottom: 12px;
+        }
+
+        .progress-count {
+          min-width: 56px;
+          font-size: 13px;
+        }
+
+        .question-card {
+          padding: 13px 12px;
+        }
+
+        .question-title {
+          font-size: 15px;
+          line-height: 1.55;
+        }
+
+        .option {
+          align-items: center;
+          min-height: 46px;
+          padding: 10px 12px;
+        }
+
+        .option-text {
+          line-height: 1.42;
+        }
+
+        .submit-row {
+          padding: 4px 0 8px;
+        }
+
+        .submit-row .primary,
+        .submit-row .secondary,
+        .submit-row .find-missing,
+        .result-actions .primary,
+        .result-actions .secondary {
+          width: 100%;
+        }
+
+        .result-actions {
+          gap: 10px;
+        }
+
+        .image-zone {
+          height: 330px;
+        }
+
+        .poster-title {
+          top: 15px;
+          padding: 0 76px;
+          font-size: clamp(17px, 4.8vw, 19px);
+        }
+
+        .poster-cn {
+          top: 52px;
+          font-size: 36px;
+        }
+
+        .poster-code {
+          top: 90px;
+          font-size: 34px;
+        }
+
+        .avatar-image {
+          width: min(90%, 260px);
+          height: 196px;
+          bottom: 18px;
+        }
+
+        .rarity {
+          top: 10px;
+          right: 10px;
+          min-width: 98px;
+          height: 29px;
+          font-size: 13px;
+        }
+
+        .share-poster {
+          --share-card-x: 16px;
+          --share-card-pad: 14px;
+          height: 660px;
+          min-height: 0;
+          max-width: 390px;
+        }
+
+        .share-poster-wrap { min-height: 0; height: 660px; }
+
+        .share-poster-wrap.poster-ready .poster-image { height: 100%; }
+
+        .share-top {
+          padding: 22px 22px 0;
+        }
+
+        .share-code {
+          font-size: 42px;
+        }
+
+        .share-cn {
+          font-size: 38px;
+        }
+
+        .share-visual {
+          height: 226px;
+          min-height: 0;
+          margin-top: 12px;
+        }
+
+        .share-avatar {
+          max-width: min(78%, 260px);
+          max-height: 92%;
+          width: auto;
+          height: auto;
+        }
+
+        .share-body {
+          min-height: 174px;
+          margin: -16px var(--share-card-x) 94px;
+          padding: 17px var(--share-card-pad) 16px;
+        }
+
+        .share-title-row {
+          align-items: flex-start;
+        }
+
+        .share-line {
+          font-size: 15px;
+          line-height: 1.62;
+        }
+
+        .share-match {
+          min-width: 88px;
+          min-height: 28px;
+          font-size: 13px;
+        }
+
+        .share-scene-list {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 6px;
+        }
+
+        .share-scene-item {
+          justify-content: center;
+          min-width: 0;
+          padding: 0 6px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .share-qr-area {
+          left: calc(var(--share-card-x) + var(--share-card-pad));
+          right: var(--share-card-x);
+          bottom: 22px;
+          grid-template-columns: 1fr 74px;
+          gap: 12px;
+          padding-top: 10px;
+        }
+
+        .share-qr {
+          width: 74px;
+          height: 74px;
+        }
+
+        .share-actions {
+          max-width: 390px;
+          gap: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body class="intro-mode">
+    <main class="shell">
+      <section id="intro" class="intro">
+        <h1>别估分了，先测测你的 UBTI。</h1>
+        <p class="disclaimer">看看你适合上什么大学</p>
+        <div class="intro-actions">
+          <button class="primary" id="startBtn">开始测试</button>
+          <button class="secondary hidden" id="lastResultBtn" type="button">查看上次结果</button>
+        </div>
+        <div class="credits">
+          <div>作者：如果超人不会飞（公众号）</div>
+          <div>托管：<a href="https://www.cloudflare.com/" target="_blank" rel="noopener">Cloudflare</a>（免费）</div>
+          <div>域名：<a href="https://www.rayname.com/" target="_blank" rel="noopener">RayName</a>（免费）</div>
+          <div>网站搭建：<a href="https://www.gm.cn/" target="_blank" rel="noopener">GMSSH</a>（免费）</div>
+        </div>
+      </section>
+
+      <section id="quiz" class="hidden">
+        <div class="progress-row">
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+          <div id="progressCount" class="progress-count">0 / 22</div>
+        </div>
+        <div id="questionsList"></div>
+        <div class="submit-row">
+          <button class="secondary" id="quizHomeBtn">返回首页</button>
+          <button class="secondary find-missing" id="findMissingBtn" type="button">定位漏答</button>
+          <button class="primary" id="submitQuiz" disabled>提交并查看结果</button>
+        </div>
+      </section>
+
+      <section id="result" class="hidden result-layout">
+        <div class="result-hero">
+          <div class="vibe-card" id="resultCard"></div>
+          <p class="result-hero-line" id="resultReaction"></p>
+          <div class="result-share-row">
+            <button class="primary" id="copyBtn">分享测试结果</button>
+          </div>
+        </div>
+        <div class="result-section">
+          <div class="result-label">你的主类型</div>
+          <h3 id="resultHeading"></h3>
+          <div id="resultBadge" class="result-badge"></div>
+          <p id="resultLead" class="result-lead"></p>
+        </div>
+        <div class="result-section">
+          <h3>该大学气质的简单解读</h3>
+          <p id="resultEssay" class="result-copy"></p>
+        </div>
+        <div class="result-section">
+          <h3>大学气质雷达</h3>
+          <div id="radarList" class="radar-list"></div>
+        </div>
+        <div class="result-section">
+          <h3>友情提示</h3>
+          <p class="result-copy">本测试仅供娱乐，别拿它当诊断、面试、相亲、分手、招聘、算命或人生判决书。你可以笑，但别太当真。</p>
+        </div>
+        <div class="result-section author-note collapsed" id="authorNote">
+          <div class="author-note-head">
+            <h3>作者的话</h3>
+            <button class="author-note-toggle" id="authorNoteToggle" type="button" aria-expanded="false" aria-controls="authorNoteBody">展开</button>
+          </div>
+          <div class="author-note-body" id="authorNoteBody">
+            <p class="result-copy">做这个 UBTI 测试，最开始确实是受 SBTI 的启发。看到那种把抽象气质做成角色的方式，我也想试试：如果不是测人格，而是测一测“你身上像哪所大学”，会不会也挺有意思。</p>
+            <p class="result-copy">另一个原因，是高考这个时间点总会让人有点恍惚。高考已经过去很多年了，但我到现在还记得那年炎热的夏天，坐在考场里，风扇转得很慢，笔尖落在答题卡上的声音很清楚。那时候总觉得人生马上要开始了，后来才发现，人生其实一直都在开始。</p>
+            <p class="result-copy">所以这个测试不只是给刚考完的人玩的，也想留给那些已经走过很久的人。你可以把它当成一个玩笑，也可以顺手想一想：当年的自己想去哪里，现在的自己又走到了哪里。愿我们都能在某个普通日子里，重新想起那个夏天，然后更认真地过好眼前这一段。</p>
+            <p class="result-copy">测试只是娱乐，结果不用太当真。但如果它刚好戳中了你一点点，欢迎把它发给当年一起熬过那个夏天的人。</p>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="primary" id="againBtn">重新测试</button>
+          <button class="secondary" id="homeBtn">回到首页</button>
+        </div>
+      </section>
+
+      <section id="share" class="hidden share-layout">
+        <div class="share-poster-wrap">
+          <div id="sharePoster" class="share-poster"></div>
+          <img id="posterImage" class="poster-image" alt="完整大学气质测试结果海报" />
+          <div id="posterStatus" class="poster-status">海报生成中</div>
+        </div>
+        <div class="share-actions">
+          <button class="secondary" id="shareBackBtn">返回结果</button>
+          <button class="secondary" id="copyShareLinkBtn">复制测试链接</button>
+          <button class="primary" id="savePosterBtn">保存到相册</button>
+        </div>
+        <p class="copy-fallback hidden" id="copyFallbackText"></p>
+      </section>
+    </main>
+
+    <div id="posterPreview" class="poster-preview hidden" aria-hidden="true">
+      <div class="poster-preview-panel">
+        <div class="poster-preview-head">
+          <p class="poster-preview-title" id="posterPreviewTitle">保存图片</p>
+          <p class="poster-preview-subtitle" id="posterPreviewSubtitle">长按下方图片，选择“保存图片”</p>
+        </div>
+        <img id="posterPreviewImg" alt="生成的大学气质测试结果图" />
+        <p class="poster-preview-tip" id="posterPreviewTip">长按图片保存到相册。</p>
+        <div class="poster-preview-actions">
+          <button class="secondary" id="closePosterPreviewBtn">关闭</button>
+          <button class="primary" id="downloadPosterPreviewBtn">下载图片</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./assets/qrcode.min.js"></script>
+    <script src="./assets/html2canvas.min.js?v=2"></script>
+    <script>
+      const questions = [
+        {
+          text: "高考结束，灵魂刚从考场飘出来，你第一反应是？",
+          options: [
+            { text: "我它喵终于毕业了", score: { life: 2, freedom: 1 } },
+            { text: "赶紧打电话喊朋友不醉不归", score: { social: 2, chaos: 1, life: 1 } },
+            { text: "手贱去网上对答案，估个分先", score: { practical: 2, roll: 1 } },
+            { text: "管你这那的，终于可以向暗恋的人表白了", score: { romance: 2, freedom: 1, chaos: 1 } }
+          ]
+        },
+        {
+          text: "如果把你丢进一个大学新生群，你最可能？",
+          options: [
+            { text: "表情包搬运工", score: { chaos: 2, social: 1 } },
+            { text: "默默潜水", score: { life: 2, romance: 1 } },
+            { text: "三句话把话题带歪", score: { chaos: 2, freedom: 1 } },
+            { text: "到处问“有无老乡”", score: { social: 2, practical: 1 } }
+          ]
+        },
+        {
+          text: "新生开学前夜，你的状态更像？",
+          options: [
+            { text: "恨不得把家都装进行李箱", score: { life: 2, practical: 1 } },
+            { text: "表面淡定，内心已经开香槟", score: { romance: 1, chaos: 1, freedom: 1 } },
+            { text: "已经开始幻想大学爱情故事了", score: { romance: 2, social: 1 } },
+            { text: "还没报到，就把校园周边摸透了", score: { practical: 2, freedom: 1 } }
+          ]
+        },
+        {
+          text: "如果大学给你发一个新手礼包，你最想抽到？",
+          options: [
+            { text: "一学期不挂科体验卡", score: { roll: 2, practical: 1 } },
+            { text: "饭卡余额 +2000", score: { life: 2, practical: 1 } },
+            { text: "男神/女神体验卡 3 个月", score: { romance: 2, social: 1 } },
+            { text: "室友全员正常人", score: { life: 2, social: 1 } }
+          ]
+        },
+        {
+          text: "你最像哪种校园传说？",
+          options: [
+            { text: "从不复习，但成绩稳稳 top3", score: { roll: 3, practical: 1 } },
+            { text: "校园十佳歌手常驻冠军", score: { romance: 2, social: 1 } },
+            { text: "刚进校园就拥有优先择偶权", score: { social: 2, romance: 1 } },
+            { text: "全国竞赛奖项拿到手软", score: { roll: 2, practical: 2 } }
+          ]
+        },
+        {
+          text: "当小组作业降临，你的第一反应是？",
+          options: [
+            { text: "先看看谁当出头鸟", score: { life: 1, practical: 1, social: 1 } },
+            { text: "我可以做，但别全让我做", score: { practical: 2, roll: 1 } },
+            { text: "我先发个表情试探一下", score: { chaos: 2, social: 1 } },
+            { text: "只要不让我汇报，什么都行", score: { life: 2, freedom: 1 } }
+          ]
+        },
+        {
+          text: "DDL（截止日期）前夜，你的精神状态是？",
+          options: [
+            { text: "人在桌旁，魂在床", score: { life: 2, romance: 1 } },
+            { text: "不慌，才凌晨 1 点", score: { chaos: 2, roll: 1 } },
+            { text: "都已经这样了，点个宵夜吧", score: { life: 2, chaos: 1 } },
+            { text: "下次一定", score: { chaos: 1, freedom: 1, roll: 1 } }
+          ]
+        },
+        {
+          text: "如果大学生活是一款游戏，你最常触发的状态是？",
+          options: [
+            { text: "体力不足", score: { life: 2, roll: 1 } },
+            { text: "余额不足", score: { practical: 2, life: 1 } },
+            { text: "您的发言包含敏感词，已被系统屏蔽", score: { chaos: 2, freedom: 1 } },
+            { text: "请选择你的支线任务", score: { freedom: 2, social: 1 } }
+          ]
+        },
+        {
+          text: "大学第一周，你最容易被什么带跑？",
+          options: [
+            { text: "室友一句“走啊，打瓦去”", score: { chaos: 2, social: 1 } },
+            { text: "有人喊“那边扫码送奶茶”", score: { social: 1, life: 1, chaos: 1 } },
+            { text: "新生群里突然出现的瓜", score: { social: 2, chaos: 1 } },
+            { text: "社团摊位上的“学长学姐很温柔”", score: { social: 2, romance: 1 } }
+          ]
+        },
+        {
+          text: "军训第一天，你最可能在想？",
+          options: [
+            { text: "该怎么装生病呢", score: { life: 2, chaos: 1 } },
+            { text: "教官能不能别看见我", score: { life: 2, romance: 1 } },
+            { text: "旁边那个人还挺好看的", score: { romance: 2, social: 1 } },
+            { text: "我现在退学还来得及吗", score: { freedom: 2, chaos: 1 } }
+          ]
+        },
+        {
+          text: "室友说“你中午帮我带个饭呗”，你会？",
+          options: [
+            { text: "你自己没长脚吗", score: { freedom: 2, chaos: 1 } },
+            { text: "下次一定", score: { chaos: 2, life: 1 } },
+            { text: "几号窗口？", score: { practical: 2, social: 1 } },
+            { text: "已读乱回", score: { chaos: 2, social: 1 } }
+          ]
+        },
+        {
+          text: "你在宿舍更像？",
+          options: [
+            { text: "耳机一戴，谁也不爱", score: { life: 2, freedom: 1 } },
+            { text: "夜宵局随叫随到", score: { social: 2, life: 1 } },
+            { text: "谁缺纸巾充电器都先问我", score: { social: 2, practical: 1 } },
+            { text: "说睡了，其实还在峡谷6连跪", score: { chaos: 2, social: 1 } }
+          ]
+        },
+        {
+          text: "如果学校突然停电一小时，你会？",
+          options: [
+            { text: "可以提前下课了，爽", score: { life: 2, freedom: 1 } },
+            { text: "发信息问问暗恋的人怎么样了", score: { romance: 2, social: 1 } },
+            { text: "正好有借口去网吧开黑了", score: { chaos: 2, social: 1 } },
+            { text: "完了，文档没保存", score: { roll: 2, practical: 1 } }
+          ]
+        },
+        {
+          text: "选了一门自己不喜欢的选修课，你会？",
+          options: [
+            { text: "来都来了", score: { life: 1, chaos: 1, roll: 1 } },
+            { text: "先问过来人：这课保分吗", score: { practical: 2, roll: 1 } },
+            { text: "随机挑选朋友圈中一名倒霉蛋帮我签到", score: { chaos: 2, social: 1 } },
+            { text: "还能退课吗？", score: { freedom: 2, practical: 1 } }
+          ]
+        },
+        {
+          text: "你的大学口头禅更像？",
+          options: [
+            { text: "真的假的", score: { social: 1, freedom: 1, chaos: 1 } },
+            { text: "woc！", score: { chaos: 2, romance: 1 } },
+            { text: "中午吃啥", score: { life: 2, social: 1 } },
+            { text: "问题不大", score: { life: 2, roll: 1 } }
+          ]
+        },
+        {
+          text: "校园里突然看到有人表白，你会？",
+          options: [
+            { text: "打开手机现场直播", score: { chaos: 2, social: 1 } },
+            { text: "内心OS：这样也行？", score: { chaos: 2, freedom: 1 } },
+            { text: "加快脚步，场面真是太尬了", score: { life: 2, freedom: 1 } },
+            { text: "看热闹，然后发个朋友圈", score: { social: 2, romance: 1 } }
+          ]
+        },
+        {
+          text: "发现大家都在卷，你会？",
+          options: [
+            { text: "打不过就加入", score: { roll: 2, practical: 1 } },
+            { text: "内心：好好好，这么玩是吧！", score: { chaos: 2, roll: 1 } },
+            { text: "我还是先睡一觉吧", score: { life: 2, freedom: 1 } },
+            { text: "心想：这地方我来对了！", score: { roll: 2, freedom: 1 } }
+          ]
+        },
+        {
+          text: "你最容易被哪种大学打动？",
+          options: [
+            { text: "食堂好吃，价格美丽", score: { life: 2, practical: 1 } },
+            { text: "图书馆很大，适合（假装）很上进", score: { roll: 2, romance: 1 } },
+            { text: "校园里帅哥美女含量稳定", score: { romance: 2, social: 1 } },
+            { text: "到处都有机会，感觉能整点动静出来", score: { practical: 2, freedom: 1 } }
+          ]
+        },
+        {
+          text: "朋友测出一个离谱但很准的结果，你会？",
+          options: [
+            { text: "哈哈哈这不就是你", score: { social: 2, life: 1 } },
+            { text: "发群里让大家一起审判", score: { social: 2, chaos: 1 } },
+            { text: "我也测一个，看看谁更离谱", score: { chaos: 2, freedom: 1 } },
+            { text: "质疑作者，UBTI 是什么鬼东西", score: { freedom: 2, chaos: 1 } }
+          ]
+        },
+        {
+          text: "大学里最容易让你破防的是？",
+          options: [
+            { text: "早八点名，舍友们集体趴窝", score: { life: 2, roll: 1 } },
+            { text: "没你努力的期末考的比你还好", score: { roll: 2, romance: 1 } },
+            { text: "复习到天亮，考的全是没复习到的", score: { roll: 2, chaos: 1 } },
+            { text: "喜欢的人官宣了，对象不是我", score: { romance: 2, chaos: 1 } }
+          ]
+        },
+        {
+          text: "多年后回到高中，你会对班主任说？",
+          options: [
+            { text: "老师，你说大学就自由了，这账怎么算", score: { freedom: 2, chaos: 1 } },
+            { text: "曾经坐在后排瞧不上的孩子现在也是 xx 超市会员了（狗头）", score: { life: 2, chaos: 1 } },
+            { text: "老师，我送的是挂历", score: { social: 2, chaos: 1 } },
+            { text: "老师，当年没收的小说能还我了吗", score: { romance: 2, freedom: 1 } }
+          ]
+        },
+        {
+          text: "如果录取通知书会说一句话，你希望它说？",
+          options: [
+            { text: "人人都瞧不起你，偏偏你最争气", score: { roll: 2, romance: 1 } },
+            { text: "欢迎来到成年人的世界", score: { practical: 2, freedom: 1 } },
+            { text: "你熬过这个夏天了", score: { life: 2, romance: 1 } },
+            { text: "是的，你没做梦", score: { romance: 2, chaos: 1 } }
+          ]
+        }
+      ];
+
+      const results = [
+        { code: "THU", cn: "清华", type: "清华型", name: "自律狠人", desc: "人生没有捷径，但可以拆成 17 个阶段目标", motto: "人生没有捷径，但可以拆成 17 个阶段目标。", persona: "你不是在学习，就是在优化学习系统。", crazy: "嘴上说还行，实际已经把明年计划排到了第四季度。", warning: "太松散、太玄学、太没有目标的环境，会让你怀疑人生是不是没开网格线。", color: "#46566c", map: { roll: 6, practical: 4 }, avatar: { role: "engineer", prop: "checklist" } },
+        { code: "PKU", cn: "北大", type: "北大型", name: "思想浓度过高", desc: "答案可以没有，问题必须高级", motto: "答案可以没有，问题必须高级。", persona: "你适合在湖边、讲座、深夜群聊里反复重构世界观。", crazy: "别人焦虑绩点，你焦虑人类文明为什么这样。", warning: "过于标准答案化的环境，会让你想站起来提问。", color: "#8b1f2d", map: { freedom: 5, romance: 3, chaos: 2 }, avatar: { role: "thinker", prop: "question" } },
+        { code: "FDU", cn: "复旦", type: "复旦型", name: "都市脑力社交人格", desc: "可以不睡，但不能没有观点", motto: "可以不睡，但不能没有观点。", persona: "在咖啡店写小论文，在群聊里重构世界观。", crazy: "deadline 前优雅崩溃，崩完还能输出 3000 字。", warning: "没有城市刺激、表达空间和信息密度，你会变得非常不像自己。", color: "#2e8b57", map: { social: 4, freedom: 3, practical: 2 }, avatar: { role: "urban", prop: "coffee" } },
+        { code: "SJTU", cn: "上交", type: "上交型", name: "理工实干卷王", desc: "少说两句，项目已经跑起来了", motto: "少说两句，项目已经跑起来了。", persona: "你适合在实验室、项目组、竞赛和实习之间高速切换。", crazy: "表面冷静，背后开了三个文档、两个仓库和一个待办看板。", warning: "只有空谈没有落地的环境，会让你想立刻打开需求文档。", color: "#315f8c", map: { practical: 5, roll: 3 }, avatar: { role: "builder", prop: "gear" } },
+        { code: "ZJU", cn: "浙大", type: "浙大型", name: "全能操作系统", desc: "能做，不吵，自己会扩容", motto: "能做，不吵，自己会扩容。", persona: "你什么都能接住一点，最后还真能接住很多。", crazy: "别人以为你很淡定，其实你后台进程已经开满。", warning: "单一路线、单一评价和单一人生，会让你的多线程天赋无处安放。", color: "#2c6a55", map: { roll: 2, practical: 2, freedom: 2, social: 1 }, avatar: { role: "runner", prop: "tabs" } },
+        { code: "NJU", cn: "南大", type: "南大型", name: "冷幽默观察家", desc: "安静不是没想法，是弹幕太多懒得发", motto: "安静不是没想法，是弹幕太多懒得发。", persona: "你适合在老校区、图书馆和深夜散步里慢慢变强。", crazy: "别人热血上头，你在旁边冷静补刀，一句话精准破防。", warning: "太吵、太浮、太急功近利的环境，会消耗你的观察力。", color: "#6b5b95", map: { romance: 3, freedom: 2, roll: 1 }, avatar: { role: "observer", prop: "book" } },
+        { code: "WHU", cn: "武大", type: "武大型", name: "浪漫胜负手", desc: "生活要有风景，考试也不能太离谱", motto: "生活要有风景，考试也不能太离谱。", persona: "你需要湖、树、风和一点点命运感，但关键时刻也能支棱起来。", crazy: "一边说算了随缘，一边在最后三天完成逆袭。", warning: "没有美感、没有空间、只有 KPI 的环境，会让你迅速枯萎。", color: "#c85566", map: { romance: 4, life: 2, freedom: 2 }, avatar: { role: "romantic", prop: "flower" } },
+        { code: "SCU", cn: "川大", type: "川大型", name: "人间烟火大心脏", desc: "天大的事，吃完这顿再说", motto: "天大的事，吃完这顿再说。", persona: "你适合热闹、好吃、有人情味的大学生活。", crazy: "焦虑归焦虑，饭还是要吃，朋友还是要见，人生还是能过。", warning: "太冷、太端、太没人味的环境，会让你想逃去食堂。", color: "#d87b32", map: { life: 5, social: 2, chaos: 2 }, avatar: { role: "foodie", prop: "bowl" } },
+        { code: "SYSU", cn: "中山", type: "中山型", name: "南方务实自由派", desc: "不必大声，但要清醒", motto: "不必大声，但要清醒。", persona: "你看起来温和，其实很知道自己要什么。", crazy: "别人激烈摇摆，你已经默默选了一条适合自己的路。", warning: "过度内耗、过度表演和过度虚荣，会让你失去耐心。", color: "#2f7a67", map: { practical: 3, freedom: 2, life: 2 }, avatar: { role: "south", prop: "fan" } },
+        { code: "ART", cn: "艺术", type: "艺术/传媒型", name: "灵感乱飞表达者", desc: "人生不适合太早被表格收编", motto: "人生不适合太早被表格收编。", persona: "你需要表达、作品、灵感和一点被误解的空间。", crazy: "灵感来时 3 小时不睡，灵感走时 3 天不想说话。", warning: "只有标准答案、没有作品出口的环境，会让你逐渐失去颜色。", color: "#c23b47", map: { romance: 4, social: 2, chaos: 3 }, avatar: { role: "artist", prop: "brush" } },
+        { code: "HKU", cn: "港校", type: "港校型", name: "deadline 优雅疯", desc: "体面可以掉线，deadline 不会", motto: "体面可以掉线，deadline 不会。", persona: "你适合高压、高速、高信息密度的国际化环境。", crazy: "一边崩溃一边排版，一边赶 due 一边保持头像体面。", warning: "太慢、太散、太没有机会密度的环境，会让你觉得人生没加载完。", color: "#f3cc4d", map: { practical: 4, social: 2, roll: 2 }, avatar: { role: "deadline", prop: "clock" } },
+        { code: "HIDE", cn: "隐藏王牌", type: "隐藏王牌型", name: "低调逆袭狠角色", desc: "光环可以没有，后劲必须很足", motto: "光环可以没有，后劲必须很足。", persona: "你不靠第一眼震场，但会在四年后突然让所有人重新认识你。", crazy: "不喊口号，不立人设，默默把能做的事一件件做完。", warning: "只看标签、不看成长性的环境，会低估你。", color: "#8d735b", map: { practical: 2, life: 2, roll: 2 }, avatar: { role: "hidden", prop: "hood" } },
+        { code: "BNU", cn: "师范", type: "师范型", name: "温柔秩序维护者", desc: "你不是爱管人，你只是看不得世界没教案", motto: "世界可以混乱，但板书必须清楚。", persona: "你自带讲清楚复杂事的能力，适合成为一群人的稳定锚点。", crazy: "别人发疯你做总结，做完总结自己再静音崩溃。", warning: "长期没人回应你的认真，会让你变成冷掉的热水袋。", color: "#6f9f78", map: { life: 3, social: 2, roll: 1 }, avatar: { role: "teacher", prop: "chalk" } },
+        { code: "FIN", cn: "财经", type: "财经型", name: "搞钱雷达常开", desc: "空气里有机会，你第一个闻到", motto: "浪漫要有，现金流也要有。", persona: "你对资源、路径和机会的敏感度很高，适合在城市里高速升级。", crazy: "嘴上说随便看看，手里已经开了三个实习表格。", warning: "太佛系的环境，会让你感觉人生收益率过低。", color: "#b98b2e", map: { practical: 5, social: 2 }, avatar: { role: "finance", prop: "coin" } },
+        { code: "LAW", cn: "政法", type: "政法型", name: "规则边界守夜人", desc: "你不是较真，你是在维护宇宙法条", motto: "没有边界的自由，不叫自由。", persona: "你适合辩论、判断、拆逻辑，也适合在关键时刻站出来说不对。", crazy: "别人吵情绪，你默默整理证据链。", warning: "长期待在不讲规则的环境，你会从人变成判例检索器。", color: "#334155", map: { roll: 2, practical: 3, freedom: 1 }, avatar: { role: "law", prop: "gavel" } },
+        { code: "MED", cn: "医科", type: "医科型", name: "人体说明书读者", desc: "你的温柔有时表现为非常严格", motto: "可以心软，但手不能抖。", persona: "你有耐心、抗压和责任感，适合在高强度里做长期主义者。", crazy: "别人熬夜叫堕落，你熬夜叫轮转。", warning: "如果环境只消耗你不修复你，你会把自己也当成病例。", color: "#3b82f6", map: { roll: 3, life: 2, practical: 2 }, avatar: { role: "doctor", prop: "stethoscope" } },
+        { code: "AGR", cn: "农林", type: "农林型", name: "自然系慢变量", desc: "你相信真正重要的东西都需要生长", motto: "别催，根系正在发力。", persona: "你适合和土地、生态、真实世界打交道，有一种慢慢变强的稳定感。", crazy: "别人赛博焦虑，你在观察一片叶子如何活下去。", warning: "太虚、太快、太悬浮的环境，会让你的根系缺氧。", color: "#5d8f47", map: { life: 4, romance: 2 }, avatar: { role: "nature", prop: "leaf" } },
+        { code: "LAN", cn: "外语", type: "外语型", name: "语境切换玩家", desc: "换一种语言，换一套表达权限", motto: "换一种语言，世界就换一个滤镜。", persona: "你对表达、文化和细微情绪很敏感，适合在跨语境里找自己。", crazy: "中文里说不出口的事，你换个语种突然很会讲。", warning: "单一语境和单一答案，会让你像被锁在同一个输入法里。", color: "#7c3aed", map: { freedom: 3, social: 3, romance: 2 }, avatar: { role: "language", prop: "speech" } },
+        { code: "AERO", cn: "航天", type: "航天型", name: "目标直指大气层外", desc: "你不是野心大，你只是坐标系比较高", motto: "眼前有题，头顶有星。", persona: "你适合硬核工程、长期项目和那些需要仰望的目标。", crazy: "别人做计划到周末，你做计划到发射窗口。", warning: "短平快和低天花板，会让你觉得空气稀薄。", color: "#1e3a8a", map: { roll: 4, practical: 3, romance: 1 }, avatar: { role: "aero", prop: "rocket" } },
+        { code: "SEA", cn: "海洋", type: "海洋型", name: "海大远航人", desc: "适合海大、远航和真实风浪", motto: "不是玄学蓝色人格，是想把世界往远处走一走。", persona: "你适合海洋、涉海、环境与跨区域流动，也适合把未知变成路线图。", crazy: "别人想去咖啡店自习，你想去海边上课，最好还能顺便出个航。", warning: "如果生活长期没有远方，你会在原地失去电量。", color: "#0284c7", map: { freedom: 3, romance: 3, life: 1 }, avatar: { role: "sea", prop: "boat" } },
+        { code: "DATA", cn: "数科", type: "数科型", name: "万物皆可建模", desc: "你看世界像看一张还没清洗的数据表", motto: "直觉很好，但先让我跑个模型。", persona: "你适合拆问题、找规律、用结构把混乱变得可计算。", crazy: "别人说感觉不对，你说样本量多少。", warning: "纯靠情绪决策的地方，会让你 CPU 过热。", color: "#0f766e", map: { roll: 2, practical: 4 }, avatar: { role: "data", prop: "chart" } },
+        { code: "NEWS", cn: "新闻", type: "新闻型", name: "现场感收集者", desc: "哪里有故事，哪里就有你的雷达", motto: "世界正在发生，我想在场。", persona: "你适合观察、记录、提问，也适合把复杂现场讲给别人听。", crazy: "别人吃瓜，你已经在做时间线。", warning: "没有信息密度的生活，会让你像断网。", color: "#ea580c", map: { social: 4, freedom: 2, chaos: 1 }, avatar: { role: "news", prop: "mic" } },
+        { code: "PSY", cn: "心理", type: "心理型", name: "情绪显微镜", desc: "你能听见别人没说出口的括号", motto: "每个反应背后都有来处。", persona: "你对人、关系和潜台词很敏感，适合处理复杂情绪现场。", crazy: "别人吵架你在分析依恋模式。", warning: "如果一直接住别人，别忘了也给自己一个容器。", color: "#a855f7", map: { romance: 2, social: 3, life: 2 }, avatar: { role: "psy", prop: "heart" } },
+        { code: "SPORT", cn: "体院", type: "体院型", name: "身体先于大脑出发", desc: "你的人生信条是先动起来再说", motto: "状态不好？先跑两圈。", persona: "你适合行动、竞技和真实反馈，越具体越能激活你。", crazy: "别人精神内耗，你物理排汗。", warning: "长期坐着空想，会让你像没充电。", color: "#16a34a", map: { life: 3, roll: 2, social: 1 }, avatar: { role: "sport", prop: "ball" } },
+        { code: "CITY", cn: "城市", type: "城市型", name: "资源导航仪", desc: "你不是现实，你是知道入口在哪", motto: "选择很重要，入口更重要。", persona: "你适合在大城市里连接资源、寻找机会、把地图越走越亮。", crazy: "别人迷茫，你在收藏咖啡店、展览、内推和地铁出口。", warning: "太封闭的环境，会让你的导航系统失灵。", color: "#475569", map: { practical: 4, social: 3 }, avatar: { role: "city", prop: "map" } },
+
+      ];
+
+      const resultCopy = {
+        THU: ["卷麻了", "TODO!", "卷麻了", "TODO! 清华", "事情很多，但心里有谱"],
+        PKU: ["想太多", "WHY?", "想太多", "WHY? 北大", "问题很多，也不急着定论"],
+        FDU: ["锐评人", "HOTTAKE", "锐评人", "HOTTAKE 复旦", "观点很快，表达也在线"],
+        SJTU: ["开了开了", "RUN-IT", "开了开了", "RUN-IT 上交", "少说两句，先把事做了"],
+        ZJU: ["全都要", "ALL-IN", "全都要", "ALL-IN 浙大", "想试很多，也真能接住"],
+        NJU: ["嗯我看看", "HMM...", "嗯我看看", "HMM... 南大", "话不多，但看得很准"],
+        WHU: ["氛围感", "MOOD", "氛围感", "MOOD 武大", "风景一到，心情就亮了"],
+        SCU: ["饭搭子", "EAT-IT", "饭搭子", "EAT-IT 川大", "天大的事，吃完再说"],
+        SYSU: ["有点东西", "LOWKEY", "有点东西", "LOWKEY 中山", "不太张扬，但心里有数"],
+        ART: ["灵感发疯", "WOW!", "灵感发疯", "WOW! 中传/央美", "想法很多，作品会说话"],
+        HKU: ["DDL 战士", "DDL!", "DDL 战士", "DDL! 港大", "越到最后，越能稳住"],
+        HIDE: ["暗中发育", "ACE-X", "暗中发育", "ACE-X 隐藏王牌", "低调做事，慢慢让人看见"],
+        BNU: ["课代表来了", "CLASS", "课代表来了", "CLASS 北师大", "乱没关系，我来总结"],
+        FIN: ["搞钱人", "CASH!", "搞钱人", "CASH! 央财", "机会一响，你先听见"],
+        LAW: ["不合规", "NO-NO", "不合规", "NO-NO 中国政法", "不是抬杠，是守边界"],
+        MED: ["别慌我在", "DOC-ON", "别慌我在", "DOC-ON 协和", "能心软，也能稳住手"],
+        AGR: ["种地吧", "ROOTS", "种地吧", "ROOTS 中国农大", "慢慢生长，也很有力量"],
+        LAN: ["翻译腔", "SWITCH", "翻译腔", "SWITCH 北外", "换个语境，突然会说"],
+        AERO: ["上天了", "UPUP!", "上天了", "UPUP! 北航", "目标很远，但脚下很稳"],
+        SEA: ["离岸了", "SAIL!", "离岸了", "SAIL! 中国海大", "想去远处，也能稳住方向"],
+        DATA: ["样本量呢", "N=?", "样本量呢", "N=? 中科大", "先别感觉，样本量多少"],
+        NEWS: ["在现场", "LIVE", "在现场", "LIVE 中传", "你总想知道事情原委"],
+        PSY: ["你还好吗", "RUOK?", "你还好吗", "RUOK? 华东师大", "很会照顾别人的感受"],
+        SPORT: ["先动了", "GOGO", "先动了", "GOGO 北体", "想太多时，先跑起来"],
+        CITY: ["地图全开", "MAP!", "地图全开", "MAP! 同济", "路很多，你总能找到入口"]
+      };
+
+      const rarityMap = {
+        THU: [2.42, "rare"],
+        PKU: [4.09, "uncommon"],
+        FDU: [5.12, "common"],
+        SJTU: [2.41, "rare"],
+        ZJU: [5.57, "common"],
+        NJU: [4.09, "uncommon"],
+        WHU: [4.15, "uncommon"],
+        SCU: [3.94, "uncommon"],
+        SYSU: [5.01, "common"],
+        ART: [4.25, "uncommon"],
+        HKU: [4.83, "uncommon"],
+        HIDE: [5.35, "common"],
+        BNU: [4.50, "uncommon"],
+        FIN: [1.87, "rare"],
+        LAW: [4.34, "uncommon"],
+        MED: [5.05, "common"],
+        AGR: [2.37, "rare"],
+        LAN: [4.79, "uncommon"],
+        AERO: [4.11, "uncommon"],
+        SEA: [4.01, "uncommon"],
+        DATA: [2.06, "rare"],
+        NEWS: [3.71, "uncommon"],
+        PSY: [4.64, "uncommon"],
+        SPORT: [4.46, "uncommon"],
+        CITY: [2.87, "rare"]
+      };
+
+      let index = 0;
+      let scores = { roll: 0, freedom: 0, practical: 0, romance: 0, social: 0, chaos: 0, life: 0 };
+      let answers = [];
+      let activeQuestions = questions;
+      let currentResult = null;
+      let preparedResult = null;
+      const savedResultKey = "ubti:last-result:v1";
+      const scoreDimensions = ["roll", "freedom", "practical", "romance", "social", "chaos", "life"];
+
+      const intro = document.getElementById("intro");
+      const quiz = document.getElementById("quiz");
+      const result = document.getElementById("result");
+      const share = document.getElementById("share");
+      const submitQuiz = document.getElementById("submitQuiz");
+      const findMissingBtn = document.getElementById("findMissingBtn");
+      const lastResultBtn = document.getElementById("lastResultBtn");
+
+
+      function personSvg(r) {
+        const role = r.avatar?.role ?? "student";
+        const skin = {
+          engineer: "#e8c1a1", thinker: "#efcfb5", urban: "#e2b899", builder: "#d3a074", runner: "#edc2a4",
+          observer: "#d4aa86", romantic: "#f0c3b5", foodie: "#e9bd90", south: "#e7be98", artist: "#e4af8c",
+          deadline: "#f0cfaa", hidden: "#9a7a62", teacher: "#e8c2a1", finance: "#dba777", law: "#c99a77",
+          doctor: "#efd0b7", nature: "#d6ae86", language: "#e8bfa8", aero: "#d6b28f", sea: "#dda987",
+          data: "#d3a883", news: "#e3ad86", psy: "#e7b6ae", sport: "#d79a72", city: "#d6aa86"
+        }[role] ?? "#e8c1a1";
+        const dark = {
+          engineer: "#323a42", thinker: "#2f3437", urban: "#252629", builder: "#263a4f", runner: "#26343d",
+          observer: "#252525", romantic: "#4c3341", foodie: "#3b2a24", south: "#293330", artist: "#41253a",
+          deadline: "#252a31", hidden: "#25272b", teacher: "#26322a", finance: "#20242a", law: "#1f2937",
+          doctor: "#334155", nature: "#31402d", language: "#2e2440", aero: "#1e2f63", sea: "#123f5f",
+          data: "#1f3937", news: "#282828", psy: "#38273d", sport: "#1f2937", city: "#29313a"
+        }[role] ?? "#2f3437";
+        const mid = r.color;
+        const light = "#f7f0e7";
+        const shadow = "#b78968";
+        const cfg = {
+          engineer: { pose: "standing", hair: "helmet", face: "flat", body: "suit", scale: 1.05, tx: 0, ty: 2, note: "checklist" },
+          thinker: { pose: "bust", hair: "think", face: "lost", body: "shirt", scale: 1.2, tx: 0, ty: 2, note: "question" },
+          urban: { pose: "lean", hair: "sharp", face: "fake", body: "jacket", scale: 1.03, tx: -3, ty: 4, note: "coffee" },
+          builder: { pose: "standing", hair: "cap", face: "hard", body: "vest", scale: 1.04, tx: 2, ty: 2, note: "gear" },
+          runner: { pose: "walk", hair: "small", face: "blank", body: "skinny", scale: 1.02, tx: 0, ty: 6, note: "tabs" },
+          observer: { pose: "kneel", hair: "than", face: "sad", body: "dark", scale: 1.02, tx: 2, ty: 6, note: "book" },
+          romantic: { pose: "dance", hair: "leafy", face: "love", body: "red", scale: 1.02, tx: 0, ty: 4, note: "flower" },
+          foodie: { pose: "monkey", hair: "messy", face: "smile", body: "brown", scale: 1.02, tx: -2, ty: 4, note: "bowl" },
+          south: { pose: "standing", hair: "helmet", face: "calm", body: "green", scale: 1.02, tx: 0, ty: 4, note: "fan" },
+          artist: { pose: "dance", hair: "messy", face: "fake", body: "red", scale: 1.04, tx: -2, ty: 3, note: "brush" },
+          deadline: { pose: "head", hair: "wide", face: "ohno", body: "hands", scale: 1.25, tx: 0, ty: -4, note: "clock" },
+          hidden: { pose: "hood", hair: "hood", face: "hidden", body: "dark", scale: 1.1, tx: 0, ty: 2, note: "hood" },
+          teacher: { pose: "mother", hair: "helmet", face: "mum", body: "green", scale: 1.02, tx: 0, ty: 4, note: "chalk" },
+          finance: { pose: "standing", hair: "sharp", face: "fake", body: "suit", scale: 1.03, tx: 0, ty: 4, note: "coin" },
+          law: { pose: "standing", hair: "judge", face: "stern", body: "suit", scale: 1.05, tx: 0, ty: 3, note: "gavel" },
+          doctor: { pose: "standing", hair: "cap", face: "tired", body: "white", scale: 1.03, tx: 0, ty: 4, note: "stethoscope" },
+          nature: { pose: "crouch", hair: "sprout", face: "woc", body: "green", scale: 1.02, tx: 0, ty: 5, note: "leaf" },
+          language: { pose: "standing", hair: "headphone", face: "talk", body: "purple", scale: 1.02, tx: 0, ty: 4, note: "speech" },
+          aero: { pose: "launch", hair: "helmet", face: "up", body: "blue", scale: 1.03, tx: 0, ty: 4, note: "rocket" },
+          sea: { pose: "standing", hair: "wave", face: "calm", body: "blue", scale: 1.02, tx: 0, ty: 4, note: "boat" },
+          data: { pose: "standing", hair: "helmet", face: "flat", body: "grid", scale: 1.03, tx: 0, ty: 4, note: "chart" },
+          news: { pose: "lean", hair: "press", face: "woc", body: "orange", scale: 1.03, tx: 0, ty: 4, note: "mic" },
+          psy: { pose: "standing", hair: "split", face: "soft", body: "purple", scale: 1.02, tx: 0, ty: 4, note: "heart" },
+          sport: { pose: "walk", hair: "band", face: "hard", body: "green", scale: 1.04, tx: 0, ty: 4, note: "ball" },
+          city: { pose: "standing", hair: "sharp", face: "fake", body: "jacket", scale: 1.03, tx: 0, ty: 4, note: "map" }
+        }[role] ?? { pose: "standing", hair: "helmet", face: "flat", body: "shirt", scale: 1, tx: 0, ty: 0, note: "book" };
+        const hair = {
+          helmet: `<polygon points="70,58 118,26 176,58 164,96 112,84 82,104" fill="${dark}"/><polygon points="112,30 176,58 148,82 112,84" fill="#4a4d4e" opacity=".65"/>`,
+          think: `<polygon points="54,70 104,24 174,42 192,86 154,122 80,104" fill="${dark}"/><polygon points="104,24 158,46 128,98 72,86" fill="#4b4d4f" opacity=".72"/>`,
+          sharp: `<polygon points="72,62 132,30 176,64 150,92 90,92" fill="${dark}"/><polygon points="94,52 142,34 116,88" fill="#555" opacity=".62"/>`,
+          cap: `<polygon points="70,64 140,36 182,64 166,88 82,92" fill="${mid}"/><rect x="140" y="60" width="48" height="12" fill="${dark}"/>`,
+          small: `<polygon points="88,62 126,36 160,64 148,84 96,84" fill="${dark}"/>`,
+          than: `<polygon points="68,62 126,28 176,60 158,94 84,96" fill="${dark}"/><polygon points="90,52 126,28 118,92" fill="#555" opacity=".7"/>`,
+          leafy: `<polygon points="72,66 116,34 166,66 150,92 92,92" fill="#4c4b34"/><polygon points="94,48 82,28 112,36" fill="#88925b"/><polygon points="138,48 168,30 162,62" fill="#88925b"/>`,
+          messy: `<polygon points="56,70 90,34 110,60 134,28 150,64 184,48 172,94 86,96" fill="${dark}"/>`,
+          wide: `<polygon points="42,82 114,26 204,78 174,126 122,96 72,126" fill="${dark}"/><polygon points="114,26 168,58 142,100 100,84" fill="#555" opacity=".7"/>`,
+          hood: `<polygon points="58,52 120,12 184,54 178,136 142,88 96,88 64,136" fill="${dark}"/><polygon points="88,58 120,34 156,58 142,82 98,82" fill="#50565c" opacity=".72"/>`,
+          judge: `<polygon points="58,62 180,62 194,92 48,92" fill="${dark}"/><polygon points="78,42 162,42 180,64 62,64" fill="#364150"/>`,
+          sprout: `<polygon points="76,66 120,38 164,66 150,90 94,90" fill="${dark}"/><path d="M118 38c-16-28 24-28 36-6-18-2-28 0-36 6z" fill="#7fa653"/>`,
+          headphone: `<polygon points="72,64 122,34 170,66 154,90 94,90" fill="${dark}"/><path d="M66 108c0-64 108-64 108 0" stroke="#6d4fc2" stroke-width="10" fill="none"/><rect x="52" y="98" width="20" height="38" fill="#6d4fc2"/><rect x="168" y="98" width="20" height="38" fill="#6d4fc2"/>`,
+          wave: `<polygon points="70,66 120,34 170,66 152,94 94,90" fill="${dark}"/><path d="M86 66c26-24 48 16 76-2" stroke="#7bc6df" stroke-width="7" fill="none"/>`,
+          press: `<polygon points="70,62 124,32 172,66 154,90 92,90" fill="${dark}"/><rect x="86" y="42" width="72" height="22" fill="#f8f8f8"/><text x="96" y="58" font-size="13" font-weight="900" fill="${mid}">PRESS</text>`,
+          split: `<polygon points="66,66 120,30 174,70 152,94 120,82 92,100" fill="${dark}"/><polygon points="120,30 174,70 152,94 120,82" fill="#8757bf" opacity=".45"/>`,
+          band: `<polygon points="72,62 122,34 170,66 154,90 94,90" fill="${dark}"/><rect x="72" y="66" width="100" height="14" fill="${mid}"/>`
+        }[cfg.hair] ?? "";
+        const face = {
+          flat: `<circle cx="104" cy="116" r="4" fill="#181818"/><circle cx="142" cy="116" r="4" fill="#181818"/><path d="M105 142h40" stroke="#3d2b25" stroke-width="5"/>`,
+          lost: `<path d="M96 110l22-8M142 102l22 8" stroke="#2b2422" stroke-width="6"/><circle cx="112" cy="120" r="4" fill="#211"/><circle cx="148" cy="120" r="4" fill="#211"/><polygon points="126,124 138,154 108,150" fill="${shadow}"/><path d="M104 166c20-12 42-10 56 4" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          fake: `<path d="M92 108c16 12 24 12 34 0M136 108c14 12 24 12 36 0" stroke="#1d1d1d" stroke-width="5" fill="none"/><polygon points="122,120 136,150 112,148" fill="${shadow}"/><path d="M104 158c20 14 40 12 56-2" stroke="#6b2f31" stroke-width="5" fill="none"/>`,
+          hard: `<path d="M92 104l32 12M164 104l-32 12" stroke="#1d1d1d" stroke-width="6"/><path d="M106 154h48" stroke="#331f1d" stroke-width="6"/>`,
+          blank: `<circle cx="108" cy="114" r="3" fill="#222"/><circle cx="146" cy="114" r="3" fill="#222"/><path d="M112 146h34" stroke="#3d2b25" stroke-width="4"/>`,
+          sad: `<path d="M98 108l24 10M154 108l-24 10" stroke="#222" stroke-width="5"/><polygon points="124,124 136,154 110,148" fill="${shadow}"/><path d="M108 166c16-14 34-14 50 0" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          love: `<path d="M100 108c-8-12 16-20 20 0 6-18 28-8 18 8l-18 18zM146 108c-8-12 16-20 20 0 6-18 28-8 18 8l-18 18z" fill="#d7353f"/><path d="M108 160c18 10 40 8 54-6" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          smile: `<circle cx="108" cy="114" r="5" fill="#222"/><circle cx="146" cy="114" r="5" fill="#222"/><path d="M102 148c18 20 42 20 60-2" stroke="#5b3332" stroke-width="6" fill="none"/>`,
+          calm: `<path d="M96 116h24M140 116h24M110 150c16 8 30 8 44 0" stroke="#222" stroke-width="5" fill="none"/>`,
+          ohno: `<polygon points="92,104 118,96 110,124" fill="#1d1d1d"/><polygon points="148,96 174,104 154,124" fill="#1d1d1d"/><polygon points="122,120 138,154 108,148" fill="${shadow}"/><path d="M102 168c22-18 48-16 66 4" stroke="#703b42" stroke-width="7" fill="none"/>`,
+          hidden: `<polygon points="100,112 120,104 114,124" fill="#060606"/><polygon points="146,104 166,112 152,124" fill="#060606"/><path d="M112 152h40" stroke="#060606" stroke-width="5" opacity=".7"/>`,
+          mum: `<circle cx="110" cy="116" r="4" fill="#222"/><circle cx="148" cy="116" r="4" fill="#222"/><polygon points="126,124 136,146 114,146" fill="${shadow}"/><path d="M108 158c18 10 36 10 52 0" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          stern: `<path d="M92 104l32 12M164 104l-32 12M108 154h54" stroke="#111" stroke-width="6"/><polygon points="124,122 138,150 110,148" fill="${shadow}"/>`,
+          tired: `<path d="M96 116c14 8 24 8 34 0M140 116c14 8 24 8 34 0" stroke="#222" stroke-width="5" fill="none"/><path d="M110 158c18-8 34-8 50 0" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          woc: `<path d="M92 104l32 12M164 104l-32 12" stroke="#222" stroke-width="5"/><circle cx="110" cy="124" r="4" fill="#222"/><circle cx="148" cy="124" r="4" fill="#222"/><path d="M112 160c18-18 36-18 52 0" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          talk: `<circle cx="108" cy="116" r="4" fill="#222"/><circle cx="146" cy="116" r="4" fill="#222"/><path d="M110 150c22 20 42 10 52-4" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          up: `<path d="M96 104l24-14M140 90l24 14" stroke="#222" stroke-width="5"/><circle cx="112" cy="112" r="4" fill="#222"/><circle cx="148" cy="112" r="4" fill="#222"/><path d="M112 154c16 10 32 10 48 0" stroke="#5b3332" stroke-width="5" fill="none"/>`,
+          soft: `<circle cx="108" cy="116" r="4" fill="#222"/><circle cx="146" cy="116" r="4" fill="#222"/><path d="M108 154c18 12 38 10 54-2" stroke="#5b3332" stroke-width="5" fill="none"/>`
+        }[cfg.face] ?? "";
+        const head = cfg.pose === "head"
+          ? `<polygon points="56,82 118,42 190,76 180,168 132,206 62,164" fill="${skin}"/><polygon points="118,42 190,76 158,112 104,92" fill="#f3ddc4" opacity=".72"/><polygon points="62,164 132,206 96,214" fill="#c99776"/>`
+          : `<polygon points="76,84 122,54 172,84 164,154 126,184 84,154" fill="${skin}"/><polygon points="122,54 172,84 148,118 108,98" fill="#f5dfc8" opacity=".62"/><polygon points="84,154 126,184 100,188" fill="#c99776" opacity=".75"/>`;
+        const body = {
+          suit: `<polygon points="86,178 164,178 186,244 62,244" fill="${mid}"/><polygon points="86,178 122,206 62,244" fill="#fff" opacity=".16"/><polygon points="164,178 122,206 186,244" fill="#000" opacity=".14"/>`,
+          shirt: `<polygon points="88,178 160,178 178,242 70,242" fill="${mid}"/><polygon points="106,178 124,242 142,178" fill="${light}" opacity=".7"/>`,
+          jacket: `<polygon points="82,178 166,176 184,244 64,244" fill="${mid}"/><polygon points="108,180 122,244 144,178" fill="#f8f8f2" opacity=".65"/>`,
+          vest: `<polygon points="84,178 164,176 184,244 62,244" fill="${mid}"/><polygon points="102,180 142,180 150,232 96,232" fill="#e7bf41"/>`,
+          skinny: `<polygon points="98,178 150,178 160,238 84,238" fill="${skin}"/><polygon points="100,238 82,260 100,260 122,238" fill="${skin}"/><polygon points="142,238 160,260 178,260 154,238" fill="${skin}"/>`,
+          dark: `<polygon points="86,178 164,178 182,244 64,244" fill="${dark}"/><polygon points="106,178 122,244 140,178" fill="#e8e0d4" opacity=".5"/>`,
+          red: `<polygon points="82,178 166,176 184,244 64,244" fill="#c53232"/><polygon points="102,180 122,242 142,180" fill="#e9c83f" opacity=".75"/>`,
+          brown: `<polygon points="84,178 164,176 184,244 62,244" fill="#91552d"/><polygon points="104,180 122,236 142,180" fill="#e8d3ac" opacity=".55"/>`,
+          green: `<polygon points="84,178 164,176 184,244 62,244" fill="${mid}"/><polygon points="104,180 122,236 142,180" fill="#e8f0d8" opacity=".55"/>`,
+          hands: `<polygon points="88,182 160,182 174,244 74,244" fill="${mid}" opacity=".65"/>`,
+          white: `<polygon points="82,178 166,176 184,244 64,244" fill="#eaf3f7"/><polygon points="108,180 122,244 144,178" fill="${mid}" opacity=".6"/>`,
+          purple: `<polygon points="84,178 164,176 184,244 62,244" fill="${mid}"/><polygon points="104,180 122,236 142,180" fill="#f0d5ff" opacity=".55"/>`,
+          blue: `<polygon points="84,178 164,176 184,244 62,244" fill="${mid}"/><polygon points="104,180 122,236 142,180" fill="#d8ecff" opacity=".5"/>`,
+          orange: `<polygon points="84,178 164,176 184,244 62,244" fill="${mid}"/><polygon points="104,180 122,236 142,180" fill="#ffe0c7" opacity=".55"/>`,
+          grid: `<polygon points="84,178 164,176 184,244 62,244" fill="${mid}"/><path d="M88 196h90M94 218h82M112 180v60M142 180v60" stroke="#fff" stroke-width="4" opacity=".22"/>`
+        }[cfg.body] ?? "";
+        const arms = {
+          standing: `<polygon points="82,186 48,220 64,236 100,202" fill="${mid}"/><polygon points="166,186 198,220 182,236 146,202" fill="${mid}"/>`,
+          bust: `<polygon points="78,190 46,230 66,242 104,206" fill="${mid}"/><polygon points="166,188 198,226 178,240 146,206" fill="${mid}"/>`,
+          lean: `<polygon points="80,186 42,210 54,230 102,204" fill="${mid}"/><polygon points="166,184 206,160 216,182 146,204" fill="${mid}"/>`,
+          walk: `<polygon points="92,184 58,204 70,224 108,206" fill="${skin}"/><polygon points="152,184 190,166 198,186 140,206" fill="${skin}"/>`,
+          kneel: `<polygon points="82,186 52,220 70,236 106,204" fill="${mid}"/><polygon points="164,186 192,218 174,234 144,204" fill="${mid}"/><polygon points="94,236 58,260 78,260 116,238" fill="${dark}"/><polygon points="142,236 170,260 190,260 154,238" fill="${dark}"/>`,
+          dance: `<polygon points="80,184 44,150 34,170 104,206" fill="${mid}"/><polygon points="166,184 204,154 216,174 146,206" fill="${mid}"/>`,
+          monkey: `<polygon points="80,186 42,150 34,170 104,206" fill="#91552d"/><polygon points="166,186 202,150 214,170 144,206" fill="#91552d"/><path d="M178 226c32 0 36-38 10-42" stroke="#91552d" stroke-width="8" fill="none"/>`,
+          head: `<polygon points="60,176 18,190 36,208 82,190" fill="${skin}"/><polygon points="180,176 222,190 204,208 158,190" fill="${skin}"/>`,
+          hood: `<polygon points="78,188 42,220 60,238 104,204" fill="${dark}"/><polygon points="166,188 202,220 184,238 146,204" fill="${dark}"/>`,
+          mother: `<polygon points="82,186 50,214 66,232 104,204" fill="${mid}"/><polygon points="166,186 198,214 182,232 144,204" fill="${mid}"/>`,
+          crouch: `<polygon points="82,188 44,222 62,238 104,206" fill="${mid}"/><polygon points="166,186 208,176 208,198 146,206" fill="${mid}"/><polygon points="90,236 60,260 82,260 118,238" fill="${mid}"/>`,
+          launch: `<polygon points="82,186 46,216 62,234 104,204" fill="${mid}"/><polygon points="166,186 206,148 218,168 146,204" fill="${mid}"/>`
+        }[cfg.pose] ?? `<polygon points="82,186 48,220 64,236 100,202" fill="${mid}"/><polygon points="166,186 198,220 182,236 146,202" fill="${mid}"/>`;
+        const notes = {
+          checklist: `<rect x="36" y="146" width="44" height="58" fill="#f8f8f2"/><path d="M46 162h22M46 178h18M46 194h22" stroke="${dark}" stroke-width="4"/><path d="M42 164l6 6 12-16" stroke="#488f43" stroke-width="5" fill="none"/>`,
+          question: `<text x="28" y="148" font-size="58" font-weight="900" fill="${mid}">?</text><text x="178" y="122" font-size="36" font-weight="900" fill="${mid}">?</text>`,
+          coffee: `<rect x="178" y="142" width="34" height="32" fill="#f8f8f2"/><path d="M212 150c14 2 12 18 0 18" stroke="${mid}" stroke-width="4" fill="none"/>`,
+          gear: `<circle cx="52" cy="156" r="23" fill="#e7e7e2"/><circle cx="52" cy="156" r="8" fill="${mid}"/><path d="M52 124v14M52 174v14M20 156h14M70 156h14" stroke="${mid}" stroke-width="6"/>`,
+          tabs: `<rect x="34" y="136" width="58" height="38" fill="#f8f8f2"/><rect x="50" y="150" width="58" height="38" fill="#e9f1e8"/><path d="M60 164h28M60 178h20" stroke="${mid}" stroke-width="4"/>`,
+          book: `<polygon points="36,146 86,134 112,154 60,168" fill="#f8f8f2"/><polygon points="60,168 112,154 112,204 60,218" fill="#e9e2f4"/>`,
+          flower: `<circle cx="190" cy="138" r="8" fill="#f2c43a"/><circle cx="178" cy="138" r="10" fill="#d9556a"/><circle cx="202" cy="138" r="10" fill="#d9556a"/><circle cx="190" cy="126" r="10" fill="#ef9aa8"/><circle cx="190" cy="150" r="10" fill="#ef9aa8"/>`,
+          bowl: `<path d="M34 160h64c-8 26-20 38-32 38s-24-12-32-38z" fill="#f7ecd9"/><path d="M42 150c10-12 22-12 30 0M60 150c10-12 22-12 30 0" stroke="${mid}" stroke-width="5" fill="none"/>`,
+          fan: `<path d="M180 186c10-54 46-56 64 0z" fill="#d7ead5"/><path d="M212 186v-58M192 186l12-50M232 186l-12-50" stroke="${mid}" stroke-width="4"/>`,
+          brush: `<polygon points="178,176 214,124 226,136 190,188" fill="#e7bf41"/><polygon points="214,124 232,104 242,116 226,136" fill="${dark}"/>`,
+          clock: `<circle cx="196" cy="146" r="28" fill="#f8f8f2"/><path d="M196 128v20l16 8" stroke="${dark}" stroke-width="5" fill="none"/>`,
+          hood: `<rect x="34" y="142" width="58" height="80" fill="#303338" opacity=".45"/>`,
+          chalk: `<rect x="32" y="132" width="74" height="50" fill="#f8f8f2"/><path d="M44 150h34M44 166h24" stroke="${mid}" stroke-width="5"/>`,
+          coin: `<circle cx="188" cy="150" r="28" fill="#e8be35"/><text x="176" y="162" font-size="30" font-weight="900" fill="#745423">¥</text>`,
+          gavel: `<rect x="176" y="138" width="46" height="18" fill="#7a4a28" transform="rotate(-28 199 147)"/><rect x="196" y="154" width="60" height="10" fill="#5b351f" transform="rotate(32 226 159)"/>`,
+          stethoscope: `<path d="M42 126v32c0 20 38 20 38 0v-32M80 158c0 26 46 22 46 58" stroke="${mid}" stroke-width="7" fill="none"/><circle cx="128" cy="216" r="10" fill="${mid}"/>`,
+          leaf: `<path d="M178 182c22-58 70-58 92-8-30 14-62 10-92 8z" fill="#86b96e"/><path d="M190 178c24-18 46-26 72-22" stroke="#4f7f3b" stroke-width="5" fill="none"/>`,
+          speech: `<path d="M28 132h82c10 0 18 8 18 18v20c0 10-8 18-18 18H72l-24 22 6-22H28c-10 0-18-8-18-18v-20c0-10 8-18 18-18z" fill="#f8f8f2"/><text x="36" y="166" font-size="22" font-weight="900" fill="${mid}">Aa</text>`,
+          rocket: `<path d="M186 190c6-52 22-86 48-104 20 26 18 64-10 104z" fill="#f8f8f2"/><circle cx="220" cy="124" r="10" fill="#8fc3f5"/><path d="M190 190l-18 24M222 190l14 24M204 198l-4 28" stroke="#f07a2d" stroke-width="7"/>`,
+          boat: `<path d="M30 190h94l-18 24H52z" fill="${mid}"/><path d="M76 136v52M76 140l42 42H76zM76 140l-34 42h34z" fill="#cbe8f6"/>`,
+          chart: `<rect x="34" y="132" width="78" height="64" fill="#f8f8f2"/><rect x="48" y="164" width="12" height="18" fill="${mid}"/><rect x="68" y="150" width="12" height="32" fill="#4ba89e"/><rect x="88" y="138" width="12" height="44" fill="#80d3cb"/>`,
+          mic: `<rect x="186" y="126" width="30" height="54" rx="15" fill="#f8f8f2"/><path d="M170 156c0 24 62 24 62 0M202 180v28M184 208h36" stroke="${mid}" stroke-width="7" fill="none"/>`,
+          heart: `<path d="M188 190c-40-28-38-66-10-66 12 0 20 8 24 16 4-8 12-16 24-16 28 0 30 38-10 66l-14 10z" fill="#d98adf"/>`,
+          ball: `<circle cx="190" cy="158" r="32" fill="#f8f8f2"/><path d="M190 126v64M158 158h64M170 136c16 12 28 12 42 0M170 180c16-12 28-12 42 0" stroke="${mid}" stroke-width="5" fill="none"/>`,
+          map: `<path d="M32 138l30-12 34 12 32-12v68l-32 12-34-12-30 12z" fill="#f8f8f2"/><path d="M62 126v68M96 138v68M46 156l64 24" stroke="#99a3ad" stroke-width="5"/>`
+        }[cfg.note] ?? "";
+        const extra = cfg.pose === "mother" ? `<polygon points="112,190 134,178 154,194 150,226 118,226" fill="#e9c6a7"/><circle cx="134" cy="184" r="10" fill="#e9c6a7"/>` : "";
+        const ground = cfg.pose === "head" ? `<ellipse cx="122" cy="236" rx="84" ry="10" fill="#e9e9e5"/>` : `<ellipse cx="122" cy="246" rx="62" ry="9" fill="#e9e9e5"/>`;
+        return `<svg class="poly-person" viewBox="0 0 260 270" aria-label="${r.type}人物">
+          ${ground}
+          <g transform="translate(${cfg.tx} ${cfg.ty}) scale(${cfg.scale}) translate(${(1 - cfg.scale) * 130} ${(1 - cfg.scale) * 140})">
+            ${notes}
+            ${body}
+            ${arms}
+            ${head}
+            ${hair}
+            ${face}
+            ${extra}
+          </g>
+        </svg>`;
+      }
+
+      function cardHtml(r, matchPercent = null) {
+        const copy = resultCopy[r.code] ?? [r.cn, r.code, r.name, `${r.code} ${r.cn}`, r.desc];
+        const rarity = rarityInfo(r.code);
+        const matchBadge = matchPercent === null ? "" : `<div class="rarity rare-${rarity[1]}">稀有度 ${rarity[0].toFixed(2)}%</div>`;
+        const avatar = `<img class="avatar-image" src="${avatarSrc(r.code)}" alt="${r.type}${r.name}人物形象" loading="eager" decoding="sync" fetchpriority="high" onerror="${avatarFallback(r.code)}" />`;
+        return `<div class="image-zone">
+          <div class="poster-title">你的大学气质是：</div>
+          <div class="poster-cn">${copy[0]}</div>
+          <div class="poster-code">${copy[1]}</div>
+          ${matchBadge}
+          ${avatar}
+        </div>`;
+      }
+
+      const avatarVersion = "20260603-fast-avatar";
+
+      function versionedAvatarPath(path) {
+        return `${path}?v=${avatarVersion}`;
+      }
+
+      function avatarSourceList(code) {
+        return [
+          versionedAvatarPath(`./assets/avatars-fast/${code}.png`),
+          versionedAvatarPath(`./assets/avatars/${code}.png`)
+        ];
+      }
+
+      function avatarSrc(code) {
+        return versionedAvatarPath(`./assets/avatars-fast/${code}.png`);
+      }
+
+      function avatarFallback(code) {
+        return `this.onerror=null;this.src='${versionedAvatarPath(`./assets/avatars/${code}.png`)}';`;
+      }
+
+      const preloadedAvatars = new Set();
+
+      function preloadAvatarAssets(code, highPriority = false) {
+        [avatarSrc(code)].forEach(src => {
+          if (preloadedAvatars.has(src)) return;
+          preloadedAvatars.add(src);
+          if (highPriority) {
+            const link = document.createElement("link");
+            link.rel = "preload";
+            link.as = "image";
+            link.href = src;
+            document.head.appendChild(link);
+          }
+          const img = new Image();
+          img.decoding = "async";
+          img.fetchPriority = highPriority ? "high" : "low";
+          img.src = src;
+        });
+      }
+
+      function ensureAvatarReady(code) {
+        return Promise.race([
+          loadFirstImageForCanvas(avatarSourceList(code)).catch(() => null),
+          sleep(3600)
+        ]);
+      }
+
+      function getTestUrl() {
+        if (location.protocol === "file:") return "http://127.0.0.1:4173/index.html";
+        return new URL("index.html", location.href).href;
+      }
+
+      function inlineQrDataUrl(url) {
+        if (!window.qrcode) return "";
+        const qr = window.qrcode(0, "M");
+        qr.addData(url);
+        qr.make();
+        return qr.createDataURL(5, 1);
+      }
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      async function waitForPosterDependencies() {
+        for (let i = 0; i < 12; i += 1) {
+          if (window.qrcode) return true;
+          await sleep(120);
+        }
+        return false;
+      }
+
+      async function canvasToPosterBlob(canvas) {
+        if (canvas.toBlob) {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png", 0.95));
+          if (blob) return blob;
+        }
+        const dataUrl = canvas.toDataURL("image/png");
+        const res = await fetch(dataUrl);
+        return res.blob();
+      }
+
+      function qrImageSrc(url) {
+        return inlineQrDataUrl(url) || `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=1&data=${encodeURIComponent(url)}`;
+      }
+
+      function rarityInfo(code) {
+        return rarityMap[code] ?? [2.50, "uncommon"];
+      }
+
+      function topScoreKey() {
+        return Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "life";
+      }
+
+      function topScoreLine() {
+        const lines = {
+          roll: "你嘴上说先缓缓，手已经把进度条往前拖了两格",
+          freedom: "你不太吃标准答案那套，人生最好能自己改键位",
+          practical: "你对入口、资源、路径很敏感，属于进校先看地图的人",
+          romance: "你很容易被氛围击中，普通日子也得有点命运感",
+          social: "你一进场就会判断这个局能不能聊、谁能一起发疯",
+          chaos: "你看起来还算正常，内心弹幕其实没停过",
+          life: "你知道什么时候该冲，也知道人快没电时要先回血"
+        };
+        return lines[topScoreKey()] ?? lines.life;
+      }
+
+      const shareRoleLineMap = {
+        THU: "嘴上没卷，手里全是进度条。",
+        PKU: "别人答题，你先质疑题目。",
+        FDU: "观点一上桌，咖啡都得让座。",
+        SJTU: "先别开会，先把第一版跑起来。",
+        ZJU: "什么都想试，偏偏还真接得住。",
+        NJU: "话不多，但一句就能把弹幕关掉。",
+        WHU: "风一吹，人生自动加滤镜。",
+        SCU: "天大的事，吃完这顿再说。",
+        SYSU: "低调不是没货，是懒得开屏。",
+        ART: "灵感来了，表格当场失业。",
+        HKU: "DDL 越近，人越清醒。",
+        HIDE: "后台发育，前台突然惊艳。",
+        BNU: "群聊一乱，你就想画重点。",
+        FIN: "机会一响，你的雷达先醒。",
+        LAW: "不是抬杠，是边界感上线。",
+        MED: "关键时刻，你是真的能顶上。",
+        AGR: "不急着开花，先把根扎稳。",
+        LAN: "换个语境，突然很会说。",
+        AERO: "目标不在眼前，在大气层外。",
+        SEA: "坐不住，是想去更远的地方。",
+        DATA: "先别感觉，样本量呢？",
+        NEWS: "哪里有事，你就想去看个明白。",
+        PSY: "一句“没事”，你能听出三层意思。",
+        SPORT: "想太多时，先动起来。",
+        CITY: "地图一开，入口就亮了。"
+      };
+
+      function shareRoleLine(r, copy) {
+        return shareRoleLineMap[r.code] ?? `${copy[4]}。`;
+      }
+
+      const shareSceneMap = {
+        THU: ["图书馆闭馆前", "DDL 前夜", "计划表第三页"],
+        PKU: ["讲座最后一排", "湖边夜聊", "问题还没问完"],
+        FDU: ["咖啡店圆桌", "观点高发区", "凌晨群聊"],
+        SJTU: ["实验室灯下", "项目文档里", "第一版现场"],
+        ZJU: ["社团群列表", "跨院选课", "后台多线程"],
+        NJU: ["老校区树下", "安静角落", "冷幽默现场"],
+        WHU: ["湖边小路", "樱花季风里", "傍晚滤镜"],
+        SCU: ["食堂热气里", "宵夜摊旁", "饭后散步"],
+        SYSU: ["树荫底下", "低调前排", "南方晚风"],
+        ART: ["画室地板", "剪辑时间线", "灵感出逃处"],
+        HKU: ["DDL 前夜", "打印店门口", "凌晨 due 区"],
+        HIDE: ["角落自习位", "后台更新中", "突然惊艳处"],
+        BNU: ["板书旁边", "群聊总结处", "秩序恢复点"],
+        FIN: ["实习信息群", "咖啡面试桌", "机会雷达区"],
+        LAW: ["辩论赛现场", "证据链旁", "规则边界处"],
+        MED: ["自习室深处", "值班灯下", "别慌现场"],
+        AGR: ["试验田边", "温室角落", "慢慢生长处"],
+        LAN: ["语音教室", "字幕暂停处", "语境切换间"],
+        AERO: ["图纸旁边", "长线项目里", "仰望天空处"],
+        SEA: ["海风路口", "航线图旁", "想去远处时"],
+        DATA: ["表格深处", "样本量旁", "模型跑通后"],
+        NEWS: ["现场边缘", "时间线里", "采访间门口"],
+        PSY: ["安静谈话角", "情绪转弯处", "一句没事后"],
+        SPORT: ["操场灯下", "出汗以后", "状态重启点"],
+        CITY: ["地铁换乘口", "地图标记处", "第二入口旁"]
+      };
+
+      function shareSceneTags(r) {
+        return shareSceneMap[r.code] ?? ["校园路口", "下课以后", "某个夏天"];
+      }
+
+      function shareViralLine(r, copy) {
+        return shareRoleLine(r, copy);
+      }
+
+      function shareInsight(r, copy) {
+        return shareViralLine(r, copy);
+      }
+
+      function renderSharePage(r, autoRender = true) {
+        const copy = resultCopy[r.code] ?? [r.cn, r.code, r.name, `${r.code} ${r.cn}`, r.desc];
+        const rarity = rarityInfo(r.code);
+        const testUrl = getTestUrl();
+        const scene = shareSceneTags(r);
+        const posterWrap = document.querySelector(".share-poster-wrap");
+        const posterImage = document.getElementById("posterImage");
+        const posterStatus = document.getElementById("posterStatus");
+        posterWrap.classList.remove("poster-ready");
+        posterImage.classList.remove("ready");
+        posterImage.removeAttribute("src");
+        hideCopyFallback();
+        document.getElementById("copyShareLinkBtn").textContent = "复制测试链接";
+        currentPosterBlob = null;
+        posterStatus.classList.add("visible");
+        posterStatus.textContent = "海报生成中";
+        document.getElementById("sharePoster").innerHTML = `
+          <div class="share-top">
+            <p class="share-kicker">高考结束了，来测测你适合上什么大学？</p>
+            <h1 class="share-code">${copy[1]}</h1>
+            <h2 class="share-cn">${copy[0]}</h2>
+          </div>
+          <div class="share-visual">
+            <img class="share-avatar" src="${avatarSrc(r.code)}" alt="${copy[3]}人物形象" loading="eager" decoding="sync" fetchpriority="high" onerror="${avatarFallback(r.code)}" />
+          </div>
+          <div class="share-body">
+            <div class="share-title-row">
+              <h3 class="share-name">${copy[3]}</h3>
+              <span class="share-match rare-${rarity[1]}">稀有度 ${rarity[0].toFixed(2)}%</span>
+            </div>
+            <p class="share-line">${shareInsight(r, copy)}</p>
+            <div class="share-scene">
+              <p class="share-scene-title">校园出没地</p>
+              <div class="share-scene-list">
+                ${scene.map(item => `<span class="share-scene-item">${item}</span>`).join("")}
+              </div>
+            </div>
+          </div>
+          <div class="share-qr-area">
+            <div>
+              <p class="share-footer-title">扫码测测你的大学气质</p>
+              <p class="share-footer-text">看看你是哪种校园精神状态。</p>
+            </div>
+            <img class="share-qr" src="${qrImageSrc(testUrl)}" alt="大学气质测试二维码" crossorigin="anonymous" />
+          </div>
+        `;
+        if (autoRender) window.setTimeout(() => renderPosterImage(r), 0);
+      }
+
+      async function renderPosterImage(r, attempt = 0) {
+        const posterWrap = document.querySelector(".share-poster-wrap");
+        const posterImage = document.getElementById("posterImage");
+        const posterStatus = document.getElementById("posterStatus");
+        try {
+          await waitForPosterDependencies();
+          const canvas = await drawSharePosterCanvas(r);
+          const dataUrl = canvas.toDataURL("image/png");
+          currentPosterBlob = null;
+          posterImage.src = dataUrl;
+          posterImage.classList.add("ready");
+          posterWrap.classList.add("poster-ready");
+          posterStatus.classList.remove("visible");
+        } catch (err) {
+          if (attempt < 2) {
+            posterStatus.textContent = "海报生成中";
+            window.setTimeout(() => renderPosterImage(r, attempt + 1), 420);
+            return;
+          }
+          console.warn("poster image generation failed", err);
+          posterStatus.textContent = "海报生成较慢，可点保存";
+          window.setTimeout(() => posterStatus.classList.remove("visible"), 2200);
+        }
+      }
+
+      async function preparePosterImage(r) {
+        const posterWrap = document.querySelector(".share-poster-wrap");
+        const posterImage = document.getElementById("posterImage");
+        const posterStatus = document.getElementById("posterStatus");
+        await waitForPosterDependencies();
+        const canvas = await drawSharePosterCanvas(r);
+        const dataUrl = canvas.toDataURL("image/png");
+        currentPosterBlob = null;
+        posterImage.src = dataUrl;
+        posterImage.classList.add("ready");
+        posterWrap.classList.add("poster-ready");
+        posterStatus.classList.remove("visible");
+        return dataUrl;
+      }
+
+      async function copyByHiddenInput(text) {
+        const input = document.createElement("input");
+        input.value = text;
+        input.setAttribute("readonly", "");
+        input.style.position = "fixed";
+        input.style.left = "-9999px";
+        document.body.appendChild(input);
+        input.select();
+        const copied = document.execCommand("copy");
+        input.remove();
+        if (!copied) throw new Error("fallback copy failed");
+      }
+
+      function showCopyFallback(text) {
+        const fallback = document.getElementById("copyFallbackText");
+        fallback.textContent = `长按复制：${text}`;
+        fallback.classList.remove("hidden");
+      }
+
+      function hideCopyFallback() {
+        document.getElementById("copyFallbackText").classList.add("hidden");
+      }
+
+      async function copyShareLink() {
+        const btn = document.getElementById("copyShareLinkBtn");
+        const originalText = btn.textContent;
+        const text = getTestUrl();
+        let copied = false;
+        hideCopyFallback();
+        try {
+          if (navigator.clipboard?.writeText) {
+            try {
+              await navigator.clipboard.writeText(text);
+              copied = true;
+            } catch (err) {
+              await copyByHiddenInput(text);
+              copied = true;
+            }
+          } else {
+            await copyByHiddenInput(text);
+            copied = true;
+          }
+          btn.textContent = copied ? "已复制" : "复制失败";
+        } catch (err) {
+          showCopyFallback(text);
+          btn.textContent = "链接已显示";
+        } finally {
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 1500);
+        }
+      }
+
+      let isSavingPoster = false;
+
+      function waitForImage(img) {
+        if (!img || img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.addEventListener("load", resolve, { once: true });
+          img.addEventListener("error", resolve, { once: true });
+        });
+      }
+
+      function downloadPosterBlob(blob, name) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      let currentPosterBlob = null;
+      let currentPosterObjectUrl = "";
+
+      function isWeChatBrowser() {
+        return /MicroMessenger/i.test(navigator.userAgent || "");
+      }
+
+      async function dataUrlToBlob(dataUrl) {
+        const res = await fetch(dataUrl);
+        return res.blob();
+      }
+
+      function showPosterPreview(dataUrl, blob = null) {
+        if (currentPosterObjectUrl) URL.revokeObjectURL(currentPosterObjectUrl);
+        currentPosterBlob = blob;
+        currentPosterObjectUrl = "";
+        document.getElementById("posterPreviewImg").src = dataUrl;
+        const panel = document.querySelector(".poster-preview-panel");
+        const title = document.getElementById("posterPreviewTitle");
+        const subtitle = document.getElementById("posterPreviewSubtitle");
+        const tip = document.getElementById("posterPreviewTip");
+        const downloadBtn = document.getElementById("downloadPosterPreviewBtn");
+        const closeBtn = document.getElementById("closePosterPreviewBtn");
+        if (isWeChatBrowser()) {
+          title.textContent = "保存图片";
+          subtitle.textContent = "长按下方图片，选择“保存图片”";
+          tip.textContent = "保存后就可以发朋友圈或转给朋友。";
+          closeBtn.textContent = "我知道了";
+          panel.classList.add("wechat-save");
+          downloadBtn.classList.add("hidden");
+        } else {
+          title.textContent = "保存图片";
+          subtitle.textContent = "长按图片保存，或点击下载图片";
+          tip.textContent = "下载后就可以发朋友圈或转给朋友。";
+          closeBtn.textContent = "关闭";
+          panel.classList.remove("wechat-save");
+          downloadBtn.classList.remove("hidden");
+        }
+        document.getElementById("posterPreview").classList.remove("hidden");
+        document.getElementById("posterPreview").setAttribute("aria-hidden", "false");
+      }
+
+      function hidePosterPreview() {
+        document.getElementById("posterPreview").classList.add("hidden");
+        document.getElementById("posterPreview").setAttribute("aria-hidden", "true");
+      }
+
+      function loadImageForCanvas(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      }
+
+      async function loadFirstImageForCanvas(srcList) {
+        let lastError = null;
+        for (const src of srcList) {
+          try {
+            return await loadImageForCanvas(src);
+          } catch (err) {
+            lastError = err;
+          }
+        }
+        throw lastError || new Error("avatar image failed");
+      }
+
+      function roundRectPath(ctx, x, y, width, height, radius) {
+        const r = Math.min(radius, width / 2, height / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + width, y, x + width, y + height, r);
+        ctx.arcTo(x + width, y + height, x, y + height, r);
+        ctx.arcTo(x, y + height, x, y, r);
+        ctx.arcTo(x, y, x + width, y, r);
+        ctx.closePath();
+      }
+
+      function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 4) {
+        const words = [...text];
+        let line = "";
+        let lines = 0;
+        for (const word of words) {
+          const test = line + word;
+          if (ctx.measureText(test).width > maxWidth && line) {
+            ctx.fillText(line, x, y);
+            y += lineHeight;
+            lines += 1;
+            line = word;
+            if (lines >= maxLines - 1) break;
+          } else {
+            line = test;
+          }
+        }
+        if (line && lines < maxLines) ctx.fillText(line, x, y);
+        return y + lineHeight;
+      }
+
+      function drawContainedImage(ctx, image, x, y, width, height) {
+        const ratio = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+        const drawW = image.naturalWidth * ratio;
+        const drawH = image.naturalHeight * ratio;
+        ctx.drawImage(image, x + (width - drawW) / 2, y + (height - drawH), drawW, drawH);
+      }
+
+      function rarityColor(level) {
+        return {
+          common: "#2b8fd8",
+          uncommon: "#64748b",
+          rare: "#8b5cf6",
+          ultra: "#f0526b"
+        }[level] ?? "#64748b";
+      }
+
+      async function drawSharePosterCanvas(r) {
+        const copy = resultCopy[r.code] ?? [r.cn, r.code, r.name, `${r.code} ${r.cn}`, r.desc];
+        const rarity = rarityInfo(r.code);
+        const scene = shareSceneTags(r);
+        const scale = 2;
+        const width = 390;
+        const height = 660;
+        const safeX = 24;
+        const canvas = document.createElement("canvas");
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const ctx = canvas.getContext("2d");
+        ctx.scale(scale, scale);
+
+        ctx.fillStyle = "#f7fbf6";
+        ctx.fillRect(0, 0, width, height);
+        const bg = ctx.createLinearGradient(0, 0, 0, height);
+        bg.addColorStop(0, "rgba(255,255,255,0.86)");
+        bg.addColorStop(1, "rgba(247,251,246,0.96)");
+        ctx.fillStyle = bg;
+        roundRectPath(ctx, 0.5, 0.5, width - 1, height - 1, 18);
+        ctx.fill();
+        ctx.strokeStyle = "#d5e6d7";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        roundRectPath(ctx, 14, 14, width - 28, height - 28, 14);
+        ctx.strokeStyle = "rgba(79,111,88,0.18)";
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(36,48,41,0.62)";
+        ctx.font = "850 12px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText("高考结束了，来测测你适合上什么大学？", safeX, 34);
+        ctx.fillStyle = "#2f9945";
+        ctx.font = "950 37px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(copy[1], safeX, 76);
+        ctx.fillStyle = "rgba(34,34,34,0.86)";
+        ctx.font = "950 34px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(copy[0], safeX, 113);
+
+        ctx.fillStyle = "rgba(79,111,88,0.10)";
+        ctx.beginPath();
+        ctx.ellipse(195, 352, 104, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        const avatar = await loadFirstImageForCanvas(avatarSourceList(r.code));
+        drawContainedImage(ctx, avatar, 76, 142, 238, 206);
+
+        const cardX = safeX;
+        const cardY = 358;
+        const cardW = width - safeX * 2;
+        const cardH = 174;
+        roundRectPath(ctx, cardX, cardY, cardW, cardH, 16);
+        ctx.fillStyle = "rgba(255,255,255,0.90)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(207,227,211,0.92)";
+        ctx.stroke();
+
+        ctx.fillStyle = "#243029";
+        ctx.font = "950 21px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText(copy[3], cardX + 18, cardY + 38);
+        const rareText = `稀有度 ${rarity[0].toFixed(2)}%`;
+        ctx.font = "950 14px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        const rareW = Math.max(92, ctx.measureText(rareText).width + 22);
+        roundRectPath(ctx, cardX + cardW - rareW - 18, cardY + 16, rareW, 30, 15);
+        ctx.fillStyle = rarityColor(rarity[1]);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.fillText(rareText, cardX + cardW - rareW / 2 - 18, cardY + 36);
+        ctx.textAlign = "left";
+
+        ctx.fillStyle = "#4f5f56";
+        ctx.font = "500 15px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        wrapCanvasText(ctx, shareInsight(r, copy), cardX + 18, cardY + 70, cardW - 36, 22, 2);
+
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = "rgba(79,111,88,0.22)";
+        ctx.beginPath();
+        ctx.moveTo(cardX + 18, cardY + 96);
+        ctx.lineTo(cardX + cardW - 18, cardY + 96);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = "#34443a";
+        ctx.font = "950 14px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText("校园出没地", cardX + 18, cardY + 116);
+        let sceneX = cardX + 18;
+        scene.forEach(item => {
+          ctx.font = "850 12px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+          const chipW = ctx.measureText(item).width + 18;
+          roundRectPath(ctx, sceneX, cardY + 129, chipW, 24, 12);
+          ctx.fillStyle = "#f3faf4";
+          ctx.fill();
+          ctx.strokeStyle = "#dbeadd";
+          ctx.stroke();
+          ctx.fillStyle = "#4f6f58";
+          ctx.fillText(item, sceneX + 9, cardY + 146);
+          sceneX += chipW + 7;
+        });
+
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = "rgba(79,111,88,0.34)";
+        ctx.beginPath();
+        ctx.moveTo(safeX, 552);
+        ctx.lineTo(width - safeX, 552);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        const footerTextX = cardX + 18;
+        ctx.fillStyle = "#243029";
+        ctx.font = "950 16px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText("扫码测测你的大学气质", footerTextX, 601);
+        ctx.fillStyle = "#6d7a70";
+        ctx.font = "500 12px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.fillText("看看你是哪种校园精神状态。", footerTextX, 623);
+        const qrSize = 74;
+        const qrX = width - safeX - qrSize - 6;
+        const qrY = 562;
+        roundRectPath(ctx, qrX, qrY, qrSize, qrSize, 10);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        const inlineQr = inlineQrDataUrl(getTestUrl());
+        if (inlineQr) {
+          const qr = await loadImageForCanvas(inlineQr);
+          ctx.drawImage(qr, qrX + 6, qrY + 6, qrSize - 12, qrSize - 12);
+        } else {
+          ctx.strokeStyle = "#d5e6d7";
+          ctx.stroke();
+          ctx.fillStyle = "#4f6f58";
+          ctx.font = "850 11px system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("复制链接", qrX + qrSize / 2, qrY + 38);
+          ctx.fillText("继续测试", qrX + qrSize / 2, qrY + 56);
+          ctx.textAlign = "left";
+        }
+        return canvas;
+      }
+
+      window.saveSharePoster = async function saveSharePoster() {
+        const btn = document.getElementById("savePosterBtn");
+        const poster = document.getElementById("sharePoster");
+        if (isSavingPoster) return;
+        isSavingPoster = true;
+        const originalText = btn.textContent;
+        btn.textContent = "生成中...";
+        btn.disabled = true;
+        try {
+          const posterImage = document.getElementById("posterImage");
+          let dataUrl = posterImage.classList.contains("ready") ? posterImage.src : "";
+          let blob = dataUrl && currentPosterBlob ? currentPosterBlob : null;
+          if (!dataUrl) {
+            await Promise.all([...poster.querySelectorAll("img")].map(waitForImage));
+            const canvas = currentResult
+              ? await drawSharePosterCanvas(currentResult)
+              : await (async () => {
+                if (!window.html2canvas) throw new Error("html2canvas not loaded");
+                return window.html2canvas(poster, {
+                  backgroundColor: null,
+                  scale: Math.min(3, window.devicePixelRatio || 2),
+                  useCORS: true,
+                  allowTaint: false,
+                  ignoreElements: element => element.classList?.contains("share-qr") && !element.src.startsWith("data:")
+                });
+              })();
+            dataUrl = canvas.toDataURL("image/png");
+            blob = isWeChatBrowser() ? null : await canvasToPosterBlob(canvas);
+          }
+          showPosterPreview(dataUrl, blob);
+          btn.textContent = isWeChatBrowser() ? "长按图片保存" : "已生成";
+        } catch (err) {
+          btn.textContent = "生成失败，可截图";
+        } finally {
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.disabled = false;
+            isSavingPoster = false;
+          }, 1800);
+        }
+      };
+
+      function resultReaction(r) {
+        const reactions = {
+          THU: "我卷了，我怎么会是卷麻了？",
+          PKU: "我悟了，我怎么又开始想太多？",
+          FDU: "我开麦了，我怎么又在锐评？",
+          SJTU: "我开了，我怎么项目又跑起来了？",
+          ZJU: "我接了，我怎么什么都想试？",
+          NJU: "我看着呢，我怎么一句话就补刀？",
+          WHU: "我有滤镜了，我怎么这么氛围感？",
+          SCU: "我饿了，我怎么天大的事也想先吃饭？",
+          SYSU: "我低调了，我怎么还是有点东西？",
+          ART: "我疯了，我怎么灵感又关不住？",
+          HKU: "我赶上了，我怎么又在 DDL 前体面？",
+          HIDE: "我藏住了，我怎么暗中发育这么久？",
+          BNU: "我总结了，我怎么又开始当课代表？",
+          FIN: "我闻到了，我怎么机会一响就醒？",
+          LAW: "我不同意，我怎么又开始讲规则？",
+          MED: "我稳住了，我怎么又在说别慌？",
+          AGR: "我种下了，我怎么慢慢也长起来了？",
+          LAN: "我切换了，我怎么一换语境就会说？",
+          AERO: "我起飞了，我怎么目标又放远了？",
+          SEA: "我离岸了，我怎么又想出去透气？",
+          DATA: "我算了，我怎么张口就是样本量？",
+          NEWS: "我到了，我怎么哪里有事都在现场？",
+          PSY: "我听见了，我怎么又在读潜台词？",
+          SPORT: "我动了，我怎么想太多时先跑起来？",
+          CITY: "我标点了，我怎么地图突然全开？"
+        };
+        return reactions[r.code] ?? `我中了，我怎么会是${r.name}？`;
+      }
+
+      function matchExplain(r) {
+        return `契合度 ${r.matchPercent}% 是根据你的选择偏向算出来的，不是固定写死。下面的气质雷达会把你的学习劲头、快乐续航、社交开关这些倾向拆开看，别太当真，但多少有点参考。`;
+      }
+
+      const resultEssayMap = {
+        THU: "你嘴上说没卷，手里的进度条倒是很会出卖人。别人还在“明天开始”，你已经把明天拆成上午、下午和睡前复盘。你不是天生不累，只是太知道事情悬着有多烦。大学里你最容易变成那种群里不说话，但最后文件命名最规范的人。有点像那种嘴上说我随便看看，结果已经把备选方案排到第三页的人。朋友找你帮忙时，通常不是因为你最会安慰人，而是因为你真的能把烂摊子收住。",
+        PKU: "你不是来找标准答案的，你是来看看标准答案凭什么标准。别人问这题选什么，你可能先问这题为什么这样问。你需要一点自由、一点争论、一些深夜聊到跑题的朋友。看起来是在想太多，其实是在给世界重新打补丁。你需要的不是一句正确答案，而是一个允许你把答案拆开重装的地方。测到这个结果，大概率说明你不怕复杂，甚至有点享受把简单问题聊到天亮。",
+        FDU: "你对信息密度有瘾。一个下午最好能塞进咖啡、观点、八卦、讲座和一点体面崩溃。你不是非要赢辩论，但很难忍住不把话题拧得更尖一点。大学对你来说不是象牙塔，是大型实时弹幕现场。你喜欢那种人和信息都很密的地方，最好走两步就能撞见新话题。朋友眼里的你，可能是“刚说完随便聊聊，下一秒就开始输出观点”的人。",
+        SJTU: "你不太吃“我们先务虚一下”这套。能动手就动手，能跑 demo 就别空喊口号。你看起来冷静，其实心里已经开了项目文档、分工表和截止时间。别人还在问有没有必要，你已经在想第一版怎么交。你不一定爱表现，但很在意事情有没有推进。最适合你的大学生活，是少一点悬浮口号，多一点能真实落地的项目和队友。",
+        ZJU: "你的人生像一台后台很忙的电脑：窗口很多，居然大多还没卡死。你不是贪心，是每条路看起来都值得试一下。大学四年最适合你的状态，是一边扩容一边筛选，最后发现自己会的东西比想象中多得离谱。你最怕的不是忙，而是忙完以后发现自己只是原地转圈。最后这张图发出去，朋友大概率会说：这不就是你吗，什么都想试，还真能试出点东西。",
+        NJU: "你不一定爱抢话，但你很会看。很多场合你像静音模式，心里弹幕却已经刷完三屏。你最可怕的地方不是输出多，而是偶尔一句话刚好扎在重点上。别人以为你没参与，其实你已经把整件事看完了。你适合那种能让人慢下来、把问题想透的地方。你不是冷，只是很多话没必要立刻说，等说出来的时候，通常就已经很准了。",
+        WHU: "你很容易被一个地方的气味、光线和风打动。路边的树、傍晚的云、下课后那几分钟，都可能突然把你拉回某个夏天。你不是只会浪漫，关键时刻也会支棱，只是人生不能一直像无窗自习室。对你来说，大学不只是上课和考试，也是一段会被天气和风景记住的时间。别人可能记得绩点，你会记得某条路、某顿饭、某个突然觉得人生还行的下午。",
+        SCU: "你的人生底层逻辑里有一条：先把人过舒服，再谈远大理想。你不一定最早冲出去，但很会让自己不断电。饭吃好了、朋友在旁边、日子有点热气，你反而能把难事慢慢做完。你不是佛，是续航管理大师。测到这个结果，说明你大概很懂“活着”这件事本身也需要经营。别小看这种能力，很多人跑得很快，但你更像能跑很久的人。",
+        SYSU: "你不爱把野心贴在脸上，甚至有点懒得解释。别人忙着展示，你更关心这条路到底顺不顺手。你看起来温和，其实心里很清楚什么能要、什么没必要。属于那种不怎么开屏，但一翻背包发现东西很齐的人。你适合不太喧哗、但机会和自由都在的地方。熟悉你的人会知道，你不是没想法，只是懒得把每一步都演给别人看。",
+        ART: "你的脑子不适合长期坐在表格里上班。灵感来的时候像突然开闸，没感觉的时候也是真的点不着。你需要作品，需要表达，也需要一点别人暂时看不懂的空间。别急着把自己修成标准件，你本来就不是量产款。测到这个结果，不代表你每天都很有灵感，而是你很难接受人生只剩流程。你需要一个可以试错、可以怪、也可以突然惊艳的地方。",
+        HKU: "你和 DDL 的关系很微妙：嘴上骂它，身体又被它召唤上线。越到最后，越能把散掉的自己捡回来。你不是喜欢高压，是高压会把你的潜能逼到前台。体面可以短暂离线，交付最好准时出现。你适合节奏快、信息密、机会多的环境，虽然会累，但也会被逼出一些自己都没想到的能力。朋友看到这个结果，可能会想起你半夜还在改排版的样子。",
+        HIDE: "你不是一出场就自带追光的人，更像那种一直在后台更新版本的人。别人忙着亮相，你在攒经验、补短板、等一个让大家重新认识你的瞬间。别急着证明自己，暗中发育不是没存在感，是在憋大招。你的大学气质不靠第一眼赢，而靠后劲。很多人一开始没看出来，等回头再看，才发现你已经悄悄把路走宽了。",
+        BNU: "你身上有一种“我来理一下”的本能。场面乱了想画重点，话题散了想拉回来，别人慌的时候你先把逻辑顺一遍。你不是天生爱管人，只是看不得世界乱成没标题的 PPT。温柔可以给，边界也要留。你适合能把复杂事情讲清楚、也能认真对待人的地方。朋友可能嘴上嫌你像课代表，但真到混乱时，第一个想起的还是你。",
+        FIN: "你对机会的声音比别人敏感一点。实习、资源、城市、路径，别人还在随便看看，你已经开始判断值不值得上车。你不一定只想搞钱，但你很知道理想不能只靠热血供电。浪漫可以有，现金流也最好别断。测到这个结果，说明你不是冷冰冰的现实派，而是很早就明白资源和选择有多重要。你适合那种入口多、节奏快、能让人不断升级的地方。",
+        LAW: "你不是爱抬杠，是很难忍受一件事没边界。大家都说算了的时候，你可能还在心里补一句：可是它不对。你擅长把情绪现场拆成规则、证据和逻辑链。这个世界有时候很乱，而你负责提醒它别太离谱。你适合有讨论、有规则、有判断的地方，也适合在关键时刻站出来说一句“不太对”。别人觉得你较真，但很多时候正是这种较真救了场。",
+        MED: "你看起来像能扛很多事，实际上也会累，只是关键时刻习惯先稳住场面。别人慌的时候，你会先把手放稳，把流程走完，再晚一点才想起自己也需要休息。你不是没有情绪，是把情绪先放进了值班室。测到这个结果，说明你身上有一种很硬的温柔。你适合长期主义，也适合那些不靠热闹取胜、但真的需要责任感的路。",
+        AGR: "你相信真正重要的东西都不是一夜长出来的。别人追热点，你更关心一件事怎么扎根、怎么活下去、怎么慢慢变好。太快太悬浮的环境会耗你，真实一点的泥土、季节和长期反馈，反而能把你养回来。你不是慢半拍，是更相信慢变量。大学对你来说，最好不是一场短跑，而是一个能让人慢慢长出根的地方。",
+        LAN: "你对语气、语境和那些没说满的话很敏感。换一种语言，像换了一盏灯，有些东西突然能说出口了。你迷人的地方不是会多少词，而是能在不同表达之间找到缝隙。别人只听字面，你还听到了括号里的情绪。你适合跨文化、跨语境、跨圈层的地方，因为你不是只想把话翻译出来，你还想知道一句话为什么这样说。",
+        AERO: "你不是看到发射就热血上头，你是需要一个足够远的目标来安放认真。今天可能看不到结果，但只要坐标够高，你反而愿意慢慢算、慢慢做。短平快不太够你用，你需要的是那种几年后回头看才知道自己飞了多远的事。你适合长线项目，也适合那些需要耐心、精度和一点仰望感的路。别人看眼前，你会忍不住看更远一点。",
+        SEA: "你不太适合一直困在同一张桌子前。远方、流动、风浪、未知路线，都会让你重新有电。你不是单纯想逃离现实，而是很想知道世界还有多少种活法。别人找固定座位，你会先看出口通向哪里。测到这个结果，说明你需要一点开阔感。大学对你来说，不该只是一个校园，更像一个能把你带向远处的码头。",
+        DATA: "你不太迷信一句“我感觉”。别人凭直觉下结论，你已经在心里问样本量、变量和偏差。你喜欢把乱糟糟的问题拆开、清洗、建模，再给出一个冷静但好用的答案。你的浪漫可能藏在一张终于跑通的图里。你适合能让你把问题算明白、讲清楚、做扎实的地方。朋友可能觉得你理性，但你自己知道，秩序感也是一种安全感。",
+        NEWS: "你不是单纯想看热闹，你是想知道热闹为什么会发生。哪里有现场、哪里有故事、哪里有人没把话说完，你就容易被吸过去。别人吃瓜吃到结论，你还在补时间线和人物关系。你要的不是瓜，是来龙去脉。你适合信息流动很快、能接触真实世界的地方。测到这个结果的人，通常很难对“正在发生的事”完全无动于衷。",
+        PSY: "你很容易听见别人没说出口的话。一句没事、一个停顿、一次突然转移话题，你都可能在心里标注一下。这个能力会让你很会照顾人，也会让你偶尔太累。别总替别人翻译情绪，你自己也需要被好好听见。你适合能认真讨论人、关系和内心秩序的地方。别人觉得你敏感，你可以把它理解成：你的接收器确实比别人开得早一点。",
+        SPORT: "你适合先动起来。想太多的时候，身体往往比脑子更诚实。跑一跑、打一场、出点汗，很多卡住的东西会自己松开。你不是没深度，只是你的重启键不在脑内会议室，而在真实的动作里。测到这个结果，说明你需要具体目标和即时反馈。比起一直坐着分析人生，你更容易在行动里把状态找回来。",
+        CITY: "你很会看地图，不只是地理上的地图。机会在哪、入口在哪、谁能连接谁、哪条路更顺，你会一点点摸清。别人还在原地问怎么办，你已经开始研究附近有没有第二个入口。你的天赋是把陌生地方走成熟人局。你适合资源密度高、选择很多的环境，因为你会从混乱里摸出路线。别人看到一座城市，你看到的是入口、路线和下一种可能。"
+      };
+
+      const radarDimensions = [
+        ["学习劲头", ["roll", "practical"], "遇到正事时，你能不能马上进入状态。"],
+        ["快乐续航", ["life", "freedom"], "压力来了，你还有多少电量能撑住。"],
+        ["找路能力", ["practical", "social"], "资源、机会和攻略，你是不是很会找。"],
+        ["社交开关", ["social", "chaos"], "人多的时候，你是能聊还是想逃。"],
+        ["生活滤镜", ["romance", "freedom"], "普通日子里，你能不能过出一点意思。"]
+      ];
+
+      function rawRadarValue(keys) {
+        return keys.reduce((sum, key) => sum + (scores[key] ?? 0), 0);
+      }
+
+      function normalizedRadarScore(value, min, max, index) {
+        if (max === min) return Math.round(68 + ((index * 7) % 19));
+        const ratio = (value - min) / (max - min);
+        return Math.max(42, Math.min(96, Math.round(42 + ratio * 48 + ((index % 2) * 3))));
+      }
+
+      function radarPolygonPoints(items, radius = 104, cx = 150, cy = 150) {
+        return items.map((item, index) => {
+          const angle = -Math.PI / 2 + index * 2 * Math.PI / items.length;
+          const distance = radius * (item.value / 100);
+          return `${(cx + Math.cos(angle) * distance).toFixed(1)},${(cy + Math.sin(angle) * distance).toFixed(1)}`;
+        }).join(" ");
+      }
+
+      function radarAxisPoint(index, total, radius = 112, cx = 150, cy = 150) {
+        const angle = -Math.PI / 2 + index * 2 * Math.PI / total;
+        return {
+          x: cx + Math.cos(angle) * radius,
+          y: cy + Math.sin(angle) * radius,
+          angle
+        };
+      }
+
+      function radarItems() {
+        const rawValues = radarDimensions.map(([, keys]) => rawRadarValue(keys));
+        const min = Math.min(...rawValues);
+        const max = Math.max(...rawValues);
+        return radarDimensions.map(([name, keys, note], index) => ({
+          name,
+          note,
+          value: normalizedRadarScore(rawRadarValue(keys), min, max, index)
+        }));
+      }
+
+      function radarHtml() {
+        const items = radarItems();
+        const grid = [0.25, 0.5, 0.75, 1].map(level => {
+          const points = items.map((_, index) => {
+            const point = radarAxisPoint(index, items.length, 104 * level);
+            return `${point.x.toFixed(1)},${point.y.toFixed(1)}`;
+          }).join(" ");
+          return `<polygon class="radar-grid" points="${points}"></polygon>`;
+        }).join("");
+        const axes = items.map((item, index) => {
+          const end = radarAxisPoint(index, items.length, 112);
+          const label = radarAxisPoint(index, items.length, 122);
+          const anchor = Math.abs(Math.cos(label.angle)) < 0.25 ? "middle" : (Math.cos(label.angle) > 0 ? "start" : "end");
+          const dy = Math.sin(label.angle) > 0.4 ? 14 : (Math.sin(label.angle) < -0.4 ? -4 : 4);
+          return `
+            <line class="radar-axis" x1="150" y1="150" x2="${end.x.toFixed(1)}" y2="${end.y.toFixed(1)}"></line>
+            <text class="radar-label" x="${label.x.toFixed(1)}" y="${(label.y + dy).toFixed(1)}" text-anchor="${anchor}">${item.name}</text>
+          `;
+        }).join("");
+        const areaPoints = radarPolygonPoints(items);
+        const dots = items.map((item, index) => {
+          const point = radarAxisPoint(index, items.length, 104 * (item.value / 100));
+          return `<circle class="radar-dot" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4"></circle>`;
+        }).join("");
+        const list = items.map(item => `
+          <div class="radar-item">
+            <div class="radar-name">${item.name}</div>
+            <div class="radar-track"><div class="radar-fill" style="width:${item.value}%"></div></div>
+            <div class="radar-score">${item.value}</div>
+            <p class="radar-note">${item.note}</p>
+          </div>
+        `).join("");
+        return `
+          <div class="radar-visual">
+            <svg class="radar-chart" viewBox="0 0 300 300" role="img" aria-label="大学气质雷达图">
+              ${grid}
+              ${axes}
+              <polygon class="radar-area" points="${areaPoints}"></polygon>
+              ${dots}
+            </svg>
+          </div>
+          <div class="radar-panel">${list}</div>
+        `;
+      }
+
+      function resultEssay(r) {
+        const copy = resultCopy[r.code] ?? [r.cn, r.code, r.name, `${r.code} ${r.cn}`, r.desc];
+        const base = resultEssayMap[r.code] ?? `${copy[3]}：${copy[4]}。${r.persona}${r.crazy}`;
+        return base;
+      }
+
+      function loadLastResult() {
+        try {
+          const raw = localStorage.getItem(savedResultKey);
+          if (!raw) return null;
+          const saved = JSON.parse(raw);
+          if (!saved || !saved.code || !results.some(r => r.code === saved.code)) return null;
+          return saved;
+        } catch (err) {
+          return null;
+        }
+      }
+
+      function saveLastResult(r) {
+        try {
+          localStorage.setItem(savedResultKey, JSON.stringify({
+            code: r.code,
+            matchPercent: r.matchPercent,
+            dimensionHits: r.dimensionHits,
+            scores: { ...scores },
+            savedAt: Date.now()
+          }));
+          refreshLastResultButton();
+        } catch (err) {
+          // Some in-app browsers can block localStorage. The test still works without a saved result.
+        }
+      }
+
+      function resultFromSaved(saved) {
+        const base = results.find(r => r.code === saved?.code);
+        if (!base) return null;
+        return {
+          ...base,
+          matchPercent: Number(saved.matchPercent) || 88,
+          dimensionHits: Number(saved.dimensionHits) || 9
+        };
+      }
+
+      function refreshLastResultButton() {
+        if (!lastResultBtn) return;
+        const saved = loadLastResult();
+        lastResultBtn.classList.toggle("hidden", !saved);
+      }
+
+      function renderResultView(r) {
+        const copy = resultCopy[r.code] ?? [r.cn, r.code, r.name, `${r.code} ${r.cn}`, r.desc];
+        currentResult = r;
+        preloadAvatarAssets(r.code, true);
+        ensureAvatarReady(r.code).catch(() => null);
+        quiz.classList.add("hidden");
+        share.classList.add("hidden");
+        result.classList.remove("hidden");
+        document.body.classList.remove("intro-mode");
+        document.body.classList.remove("quiz-mode");
+        document.body.classList.remove("share-mode");
+        document.body.classList.add("result-mode");
+        document.getElementById("resultCard").innerHTML = cardHtml(r, r.matchPercent);
+        document.getElementById("resultReaction").textContent = resultReaction(r);
+        document.getElementById("resultHeading").textContent = copy[3];
+        document.getElementById("resultBadge").textContent = `契合度 ${r.matchPercent}%`;
+        document.getElementById("resultLead").textContent = shareRoleLine(r, copy);
+        document.getElementById("radarList").innerHTML = radarHtml();
+        document.getElementById("resultEssay").textContent = resultEssay(r);
+        resetAuthorNote();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function showSavedResult(saved) {
+        const r = resultFromSaved(saved);
+        if (!r) {
+          refreshLastResultButton();
+          return;
+        }
+        scores = { roll: 0, freedom: 0, practical: 0, romance: 0, social: 0, chaos: 0, life: 0, ...(saved.scores ?? {}) };
+        preparedResult = null;
+        intro.classList.add("hidden");
+        renderResultView(r);
+      }
+
+      function updateProgress() {
+        const answered = answers.filter(v => v !== undefined).length;
+        document.getElementById("progressCount").textContent = `${answered} / ${activeQuestions.length}`;
+        document.getElementById("progressFill").style.width = `${(answered / activeQuestions.length) * 100}%`;
+        updateSubmitState();
+      }
+
+      function updateSubmitState() {
+        const isComplete = answers.length === activeQuestions.length && !answers.some(v => v === undefined);
+        submitQuiz.disabled = !isComplete;
+        const missingIndex = answers.findIndex(v => v === undefined);
+        findMissingBtn.disabled = missingIndex === -1;
+        findMissingBtn.textContent = missingIndex === -1 ? "已答完" : "定位漏答";
+        if (isComplete) {
+          preparedResult = pickResult();
+          preloadAvatarAssets(preparedResult.code, true);
+          ensureAvatarReady(preparedResult.code).catch(() => null);
+        } else {
+          preparedResult = null;
+        }
+      }
+
+      function findMissingAnswer() {
+        const missingIndex = answers.findIndex(v => v === undefined);
+        if (missingIndex === -1) return;
+        const card = document.querySelector(`[data-question="${missingIndex}"]`);
+        if (!card) return;
+        card.classList.remove("missing-question");
+        void card.offsetWidth;
+        card.classList.add("missing-question");
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        findMissingBtn.textContent = `第 ${missingIndex + 1} 题还没选`;
+        window.setTimeout(() => {
+          if (answers.findIndex(v => v === undefined) !== -1) findMissingBtn.textContent = "定位漏答";
+        }, 1600);
+      }
+
+      function shuffledOptions(q) {
+        return {
+          ...q,
+          options: q.options
+            .map(option => ({ option, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(item => item.option)
+        };
+      }
+
+      function renderAllQuestions() {
+        activeQuestions = questions.map(shuffledOptions);
+        document.getElementById("questionsList").innerHTML = activeQuestions.map((q, qi) => `
+          <section class="question-card" data-question="${qi}">
+            <h2 class="question-title">${qi + 1}.${q.text}</h2>
+            <div class="options">
+              ${q.options.map((option, i) => `
+                <button class="option" data-question="${qi}" data-choice="${i}" type="button">
+                  <span class="radio"></span>
+                  <span class="option-text">${option.text}</span>
+                </button>
+              `).join("")}
+            </div>
+          </section>
+        `).join("");
+        updateProgress();
+      }
+
+      function applyScoreForAnswer(questionIndex, choice) {
+        const delta = activeQuestions[questionIndex]?.options?.[choice]?.score ?? {};
+        Object.keys(delta).forEach(k => scores[k] += delta[k]);
+      }
+
+      function calculateScores() {
+        scores = { roll: 0, freedom: 0, practical: 0, romance: 0, social: 0, chaos: 0, life: 0 };
+        answers.forEach((choice, questionIndex) => {
+          if (choice !== undefined) applyScoreForAnswer(questionIndex, choice);
+        });
+      }
+
+      function getQuestionBaselines() {
+        return questions.reduce((baseline, q) => {
+          q.options.forEach(option => {
+            Object.entries(option.score ?? {}).forEach(([key, value]) => {
+              baseline[key] += value / q.options.length;
+            });
+          });
+          return baseline;
+        }, Object.fromEntries(scoreDimensions.map(key => [key, 0])));
+      }
+
+      function normalizeScores(rawScores) {
+        const baselines = getQuestionBaselines();
+        return Object.fromEntries(scoreDimensions.map(key => [key, (rawScores[key] ?? 0) / Math.max(baselines[key] ?? 0, 1)]));
+      }
+
+      function calculateDimensionHits(result, confidenceGap, energyRatio, profileScores = scores) {
+        const scoreValues = Object.values(profileScores);
+        const maxScore = Math.max(...scoreValues, 1);
+        const sortedScores = [...scoreValues].sort((a, b) => b - a);
+        const topGap = maxScore - (sortedScores[1] ?? 0);
+        const activeScoreDims = scoreValues.filter(value => value >= maxScore * 0.5).length;
+        const mapKeys = Object.keys(result.map);
+        const profileHits = mapKeys.filter(key => (profileScores[key] ?? 0) >= maxScore * 0.46).length;
+        const coverageScore = activeScoreDims >= 6 ? 2 : activeScoreDims >= 4 ? 1 : 0;
+        const profileScore = Math.min(2, profileHits);
+        const confidenceScore = confidenceGap > 0.18 ? 1 : 0;
+        const focusPenalty = topGap >= 5 ? 1 : 0;
+        const energyScore = energyRatio > 0.9 ? 1 : 0;
+        const rareFullHit = profileHits >= mapKeys.length && activeScoreDims >= 6 && confidenceGap > 0.22 ? 1 : 0;
+        const cap = rareFullHit ? 12 : 11;
+        return Math.max(7, Math.min(cap, 7 + coverageScore + profileScore + confidenceScore + energyScore + rareFullHit - focusPenalty));
+      }
+
+      function pickResult() {
+        calculateScores();
+        const signature = answers.reduce((sum, choice, i) => sum + ((choice ?? 0) + 1) * (i + 3), 0);
+        const signatureOffset = answers.reduce((sum, choice, i) => sum + ((choice ?? 0) + 1) * (i + 11) * (i % 5 + 1), 0);
+        const matchScores = normalizeScores(scores);
+        const scoreMagnitude = Math.sqrt(Object.values(matchScores).reduce((sum, value) => sum + value * value, 0)) || 1;
+        const rankedResults = results.map((r, idx) => {
+          const profileMagnitude = Math.sqrt(Object.values(r.map).reduce((sum, value) => sum + value * value, 0)) || 1;
+          let dot = 0;
+          for (const [k, w] of Object.entries(r.map)) dot += (matchScores[k] ?? 0) * w;
+          return { result: r, score: dot / (scoreMagnitude * profileMagnitude), idx };
+        }).sort((a, b) => b.score - a.score);
+        const bestScore = rankedResults[0]?.score ?? 0;
+        const secondScore = rankedResults[1]?.score ?? 0;
+        const pool = rankedResults.slice(0, 18);
+        const selected = pool[signatureOffset % pool.length] ?? rankedResults[0];
+        const best = selected.result;
+        const confidenceGap = Math.max(0, bestScore - secondScore);
+        const answerEnergy = Object.values(scores).reduce((sum, value) => sum + Math.abs(value), 0);
+        const energyRatio = Math.min(1, answerEnergy / (activeQuestions.length * 3));
+        const selectedGap = Math.max(0, bestScore - selected.score);
+        best.matchPercent = Math.max(68, Math.min(96, Math.round(68 + confidenceGap * 220 + energyRatio * 12 - selectedGap * 90)));
+        best.dimensionHits = calculateDimensionHits(best, confidenceGap, energyRatio, matchScores);
+        return best;
+      }
+
+      async function showResult() {
+        const missingIndex = answers.findIndex(v => v === undefined);
+        if (missingIndex !== -1) {
+          findMissingAnswer();
+          return;
+        }
+        const r = preparedResult ?? pickResult();
+        const originalText = submitQuiz.textContent;
+        submitQuiz.disabled = true;
+        submitQuiz.textContent = "生成中...";
+        preloadAvatarAssets(r.code, true);
+        ensureAvatarReady(r.code).catch(() => null);
+        saveLastResult(r);
+        renderResultView(r);
+        submitQuiz.textContent = originalText;
+      }
+
+      function resetAuthorNote() {
+        const note = document.getElementById("authorNote");
+        const toggle = document.getElementById("authorNoteToggle");
+        note?.classList.add("collapsed");
+        if (toggle) {
+          toggle.textContent = "展开";
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      function toggleAuthorNote() {
+        const note = document.getElementById("authorNote");
+        const toggle = document.getElementById("authorNoteToggle");
+        if (!note || !toggle) return;
+        const isCollapsed = note.classList.toggle("collapsed");
+        toggle.textContent = isCollapsed ? "展开" : "收起";
+        toggle.setAttribute("aria-expanded", String(!isCollapsed));
+      }
+
+      document.getElementById("startBtn").addEventListener("click", () => {
+        intro.classList.add("hidden");
+        quiz.classList.remove("hidden");
+        document.body.classList.remove("intro-mode");
+        document.body.classList.add("quiz-mode");
+        answers = Array(questions.length).fill(undefined);
+        currentResult = null;
+        preparedResult = null;
+        renderAllQuestions();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      lastResultBtn.addEventListener("click", () => {
+        const saved = loadLastResult();
+        if (saved) showSavedResult(saved);
+      });
+
+      document.getElementById("questionsList").addEventListener("click", e => {
+        const btn = e.target.closest(".option");
+        if (!btn) return;
+        const questionIndex = Number(btn.dataset.question);
+        const choice = Number(btn.dataset.choice);
+        answers[questionIndex] = choice;
+        document.querySelectorAll(`.option[data-question="${questionIndex}"]`).forEach(el => el.classList.remove("selected"));
+        btn.classList.add("selected");
+        updateProgress();
+      });
+
+      submitQuiz.addEventListener("click", showResult);
+      findMissingBtn.addEventListener("click", findMissingAnswer);
+
+      document.getElementById("authorNoteToggle").addEventListener("click", toggleAuthorNote);
+
+      document.getElementById("quizHomeBtn").addEventListener("click", () => {
+        quiz.classList.add("hidden");
+        result.classList.add("hidden");
+        share.classList.add("hidden");
+        intro.classList.remove("hidden");
+        document.body.classList.remove("quiz-mode");
+        document.body.classList.remove("result-mode");
+        document.body.classList.remove("share-mode");
+        document.body.classList.add("intro-mode");
+        currentResult = null;
+        preparedResult = null;
+        refreshLastResultButton();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      document.getElementById("againBtn").addEventListener("click", () => {
+        index = 0;
+        answers = [];
+        currentResult = null;
+        preparedResult = null;
+        scores = { roll: 0, freedom: 0, practical: 0, romance: 0, social: 0, chaos: 0, life: 0 };
+        result.classList.add("hidden");
+        share.classList.add("hidden");
+        intro.classList.remove("hidden");
+        document.body.classList.remove("result-mode");
+        document.body.classList.remove("quiz-mode");
+        document.body.classList.remove("share-mode");
+        document.body.classList.add("intro-mode");
+        document.getElementById("copyBtn").textContent = "分享测试结果";
+        refreshLastResultButton();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      document.getElementById("homeBtn").addEventListener("click", () => {
+        result.classList.add("hidden");
+        quiz.classList.add("hidden");
+        share.classList.add("hidden");
+        intro.classList.remove("hidden");
+        document.body.classList.remove("result-mode");
+        document.body.classList.remove("quiz-mode");
+        document.body.classList.remove("share-mode");
+        document.body.classList.add("intro-mode");
+        currentResult = null;
+        preparedResult = null;
+        refreshLastResultButton();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      document.getElementById("copyBtn").addEventListener("click", () => {
+        if (!currentResult) currentResult = pickResult();
+        renderSharePage(currentResult);
+        result.classList.add("hidden");
+        share.classList.remove("hidden");
+        document.body.classList.remove("result-mode");
+        document.body.classList.add("share-mode");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      document.getElementById("shareBackBtn").addEventListener("click", () => {
+        share.classList.add("hidden");
+        result.classList.remove("hidden");
+        document.body.classList.remove("share-mode");
+        document.body.classList.add("result-mode");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      document.getElementById("copyShareLinkBtn").addEventListener("click", copyShareLink);
+
+      document.getElementById("savePosterBtn").addEventListener("click", window.saveSharePoster);
+
+      document.getElementById("closePosterPreviewBtn").addEventListener("click", hidePosterPreview);
+
+      document.getElementById("posterPreview").addEventListener("click", e => {
+        if (e.target.id === "posterPreview") hidePosterPreview();
+      });
+
+      document.getElementById("downloadPosterPreviewBtn").addEventListener("click", async () => {
+        if (!currentPosterBlob) {
+          const src = document.getElementById("posterPreviewImg").src;
+          if (src) currentPosterBlob = await dataUrlToBlob(src);
+        }
+        if (currentPosterBlob) downloadPosterBlob(currentPosterBlob, "大学气质测试结果.png");
+      });
+
+      refreshLastResultButton();
+
+    </script>
+  </body>
+</html>

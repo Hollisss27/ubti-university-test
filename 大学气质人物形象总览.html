@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>大学气质人物形象总览</title>
+    <style>
+
+      :root {
+        --bg: #f7fbf6;
+        --card: #fffefc;
+        --line: #d9e9dc;
+        --line-strong: #cfe3d3;
+        --text: #243029;
+        --muted: #6f7f74;
+        --green: #4f6f58;
+        --accent: #2f8f42;
+        --blue: #4f8df7;
+        --shadow: 0 24px 70px rgba(75, 105, 82, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "PingFang SC",
+          "Hiragino Sans GB",
+          "Microsoft YaHei",
+          Arial,
+          sans-serif;
+        background:
+          radial-gradient(circle at 12% 12%, rgba(83, 126, 91, 0.07), transparent 28%),
+          radial-gradient(circle at 88% 28%, rgba(83, 126, 91, 0.05), transparent 30%),
+          var(--bg);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .shell {
+        width: min(720px, calc(100vw - 36px));
+        margin: 24px auto 0;
+        min-height: calc(100vh - 24px);
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line-strong);
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 18px 48px rgba(75, 105, 82, 0.1);
+        padding: 22px 20px 36px;
+      }
+
+      body.result-mode .shell {
+        width: min(1040px, calc(100vw - 72px));
+        padding: 26px;
+      }
+
+      .intro {
+        display: flex;
+        min-height: 520px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px 0;
+      }
+
+      .intro h1 {
+        margin: 0;
+        max-width: 520px;
+        font-size: 38px;
+        line-height: 1.18;
+        letter-spacing: 0;
+      }
+
+      .primary {
+        margin-top: 30px;
+        height: 44px;
+        padding: 0 22px;
+        border: 0;
+        border-radius: 12px;
+        background: #4f6f58;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .disclaimer {
+        margin-top: 18px;
+        color: #8a968d;
+        font-size: 14px;
+      }
+
+      .credits {
+        margin-top: 34px;
+        text-align: left;
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.65;
+        font-weight: 650;
+      }
+
+      .credits a {
+        color: #06e;
+        text-decoration: underline;
+      }
+
+      .vibe-card {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+      }
+
+      .image-zone {
+        position: relative;
+        height: 330px;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 86% 90%, rgba(79, 111, 88, 0.08), transparent 28%),
+          #fff;
+      }
+
+      .poster-title {
+        position: absolute;
+        top: 18px;
+        left: 0;
+        right: 0;
+        padding: 0 104px;
+        z-index: 3;
+        text-align: center;
+        color: rgba(35, 35, 35, 0.72);
+        font-size: 24px;
+        line-height: 1.1;
+        font-weight: 850;
+      }
+
+      .poster-cn {
+        position: absolute;
+        top: 58px;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        text-align: center;
+        color: rgba(34, 34, 34, 0.82);
+        font-size: 44px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .poster-code {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        text-align: center;
+        color: var(--accent);
+        font-size: 46px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .rarity {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 4;
+        min-width: 78px;
+        height: 34px;
+        padding: 0 12px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--blue);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 850;
+      }
+
+      .caption {
+        min-height: 120px;
+        padding: 24px 22px;
+        border-top: 1px solid #eef2f7;
+      }
+
+      .caption-title {
+        margin: 0 0 10px;
+        font-size: 26px;
+        line-height: 1.1;
+        font-weight: 900;
+      }
+
+      .caption-title span {
+        margin-left: 10px;
+        color: var(--muted);
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .caption-desc {
+        margin: 0;
+        color: #667a95;
+        font-size: 21px;
+        line-height: 1.25;
+        font-weight: 750;
+      }
+
+      .poly-person {
+        position: absolute;
+        left: 50%;
+        bottom: -16px;
+        width: 206px;
+        height: 206px;
+        transform: translateX(-50%);
+      }
+
+      .avatar-image {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        z-index: 1;
+        width: min(86%, 250px);
+        height: 174px;
+        object-fit: contain;
+        transform: translateX(-50%);
+      }
+
+      .progress-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .progress-track {
+        height: 10px;
+        border-radius: 999px;
+        background: #eaf2ed;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: #9fbba7;
+        transition: width 0.2s ease;
+      }
+
+      .progress-count {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .question-card {
+        border: 1px solid var(--line-strong);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.72);
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+
+      .question-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 66px;
+        height: 30px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: #edf6ef;
+        border: 1px solid var(--line-strong);
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .hidden-dims {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .question-title {
+        margin: 0 0 16px;
+        font-size: 18px;
+        line-height: 1.35;
+        font-weight: 850;
+      }
+
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+
+      .option {
+        display: grid;
+        grid-template-columns: 18px 24px 1fr;
+        align-items: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 0 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.78);
+        cursor: pointer;
+      }
+
+      .option:hover {
+        border-color: #adcbb4;
+        background: #fbfffb;
+      }
+
+      .option.selected {
+        border-color: #8fb99a;
+        background: #f2faf4;
+      }
+
+      .option.selected .radio {
+        border-color: #4f6f58;
+        box-shadow: inset 0 0 0 5px #fff;
+        background: #4f6f58;
+      }
+
+      .submit-row {
+        display: flex;
+        justify-content: center;
+        padding: 12px 0 4px;
+      }
+
+      .radio {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1.5px solid #7d877f;
+        background: #fff;
+      }
+
+      .letter {
+        color: var(--green);
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      .option-text {
+        font-size: 16px;
+        line-height: 1.35;
+        font-weight: 800;
+      }
+
+      .result-layout {
+        display: block;
+      }
+
+      .result-hero {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.82fr) 1fr;
+        gap: 22px;
+        margin-bottom: 20px;
+      }
+
+      .result-panel,
+      .result-section {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.84);
+        padding: 22px;
+      }
+
+      .result-panel h2 {
+        margin: 8px 0 16px;
+        font-size: 52px;
+        line-height: 1;
+      }
+
+      .result-label {
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .result-badge {
+        display: inline-flex;
+        align-items: center;
+        margin: 4px 0 18px;
+        min-height: 40px;
+        padding: 0 18px;
+        border-radius: 999px;
+        background: #edf6ef;
+        border: 1px solid var(--line-strong);
+        color: var(--green);
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .result-lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.7;
+        font-weight: 760;
+      }
+
+      .result-section {
+        margin-top: 20px;
+      }
+
+      .result-section h3 {
+        margin: 0 0 18px;
+        font-size: 23px;
+        line-height: 1.2;
+      }
+
+      .result-copy {
+        margin: 0;
+        color: var(--text);
+        font-size: 17px;
+        line-height: 1.9;
+        font-weight: 680;
+      }
+
+      .dimension-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .dimension-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: start;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px 18px;
+        background: #fff;
+      }
+
+      .dimension-title {
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 900;
+      }
+
+      .dimension-desc {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.5;
+        font-weight: 680;
+      }
+
+      .dimension-score {
+        color: var(--green);
+        font-size: 18px;
+        font-weight: 950;
+        white-space: nowrap;
+      }
+
+      .result-list {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+      }
+
+      .result-item {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 13px 16px;
+        background: #fff;
+      }
+
+      .result-item b {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .result-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      .secondary {
+        height: 46px;
+        padding: 0 18px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--text);
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          width: calc(100vw - 24px);
+          margin-top: 12px;
+          min-height: calc(100vh - 12px);
+          padding: 16px 12px 28px;
+          border-radius: 16px;
+        }
+
+        body.result-mode .shell {
+          width: calc(100vw - 24px);
+          padding: 14px 10px 28px;
+        }
+
+        .intro {
+          grid-template-columns: 1fr;
+        }
+
+        .result-hero {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .intro {
+          min-height: 480px;
+          padding: 36px 0 28px;
+        }
+
+        .intro h1 {
+          max-width: 300px;
+          font-size: 28px;
+          line-height: 1.18;
+        }
+
+        .primary {
+          margin-top: 24px;
+          height: 40px;
+          padding: 0 18px;
+          border-radius: 10px;
+          font-size: 15px;
+        }
+
+        .credits {
+          margin-top: 28px;
+          font-size: 13px;
+          line-height: 1.7;
+        }
+
+        .question-title {
+          margin-bottom: 14px;
+          font-size: 16px;
+          font-weight: 820;
+        }
+
+        .question-card {
+          padding: 14px;
+          margin-bottom: 12px;
+          border-radius: 14px;
+        }
+
+        .question-head {
+          margin-bottom: 12px;
+        }
+
+        .pill {
+          min-width: 58px;
+          height: 26px;
+          padding: 0 10px;
+          font-size: 12px;
+        }
+
+        .hidden-dims {
+          font-size: 11px;
+        }
+
+        .option {
+          grid-template-columns: 16px 21px 1fr;
+          min-height: 42px;
+          gap: 8px;
+          padding: 0 10px;
+          border-radius: 11px;
+        }
+
+        .radio {
+          width: 14px;
+          height: 14px;
+        }
+
+        .letter {
+          font-size: 15px;
+        }
+
+        .option-text {
+          font-size: 14px;
+          font-weight: 760;
+        }
+
+        .image-zone {
+          height: 320px;
+        }
+
+        .poster-title {
+          font-size: 24px;
+          top: 16px;
+          padding: 0 88px;
+        }
+
+        .poster-cn {
+          font-size: 42px;
+          top: 56px;
+        }
+
+        .poster-code {
+          font-size: 40px;
+          top: 98px;
+        }
+
+        .poly-person {
+          width: 196px;
+          height: 196px;
+        }
+
+        .avatar-image {
+          width: min(86%, 238px);
+          height: 168px;
+        }
+
+        .result-panel h2 {
+          font-size: 32px;
+          line-height: 1.18;
+        }
+
+        .result-panel,
+        .result-section {
+          padding: 18px 16px;
+          border-radius: 16px;
+        }
+
+        .result-section h3 {
+          font-size: 20px;
+        }
+
+        .result-copy,
+        .result-lead {
+          font-size: 15px;
+        }
+
+        .dimension-item {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding: 14px;
+        }
+
+        .dimension-score {
+          font-size: 16px;
+        }
+      }
+    
+      body { background: #f6f9f7; padding-bottom: 48px; }
+      .gallery-shell { width: min(1120px, calc(100vw - 40px)); margin: 24px auto; }
+      .gallery-head { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 18px; margin-bottom: 22px; }
+      .gallery-head h1 { margin: 0; font-size: 30px; line-height: 1.15; letter-spacing: 0; }
+      .gallery-head p { margin: 8px 0 0; color: var(--muted); font-weight: 750; }
+      .gallery-note { margin: 18px 0 12px; color: #56677b; font-size: 15px; line-height: 1.55; text-align: center; font-weight: 750; }
+      .gallery-section-title { margin: 18px 0 12px; color: #60738c; font-size: 15px; font-weight: 900; }
+      .gallery-section-title::before { content: ""; display: inline-block; width: 4px; height: 18px; margin-right: 9px; border-radius: 999px; background: #21c58b; vertical-align: -4px; }
+      .gallery-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+      .gallery-card { overflow: hidden; border: 1px solid #d9e5ef; border-radius: 14px; background: #fff; box-shadow: 0 10px 26px rgba(45, 70, 96, .04); cursor: pointer; transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+      .gallery-card:hover { transform: translateY(-2px); border-color: #bdd5e7; box-shadow: 0 16px 34px rgba(45, 70, 96, .09); }
+      .gallery-card:focus-visible { outline: 3px solid rgba(47, 143, 66, .28); outline-offset: 3px; }
+      .gallery-visual { position: relative; height: 312px; overflow: hidden; background: linear-gradient(#fff, #fff 78%, #f7fafb); }
+      .gallery-rarity { position: absolute; top: 10px; right: 10px; z-index: 5; min-width: 56px; height: 23px; padding: 0 9px; display: grid; place-items: center; border-radius: 999px; color: #fff; font-size: 12px; line-height: 1; font-weight: 950; box-shadow: 0 5px 12px rgba(29, 54, 78, .14); white-space: nowrap; }
+      .rare-common { background: #2b8fd8; }
+      .rare-uncommon { background: #64748b; }
+      .rare-rare { background: #8b5cf6; }
+      .rare-ultra { background: #f0526b; }
+      .gallery-type { position: absolute; top: 12px; left: 8px; right: 8px; z-index: 2; text-align: center; color: rgba(45,45,45,.58); font-size: 18px; line-height: 1.1; font-weight: 850; }
+      .gallery-cn { position: absolute; top: 46px; left: 8px; right: 8px; z-index: 2; text-align: center; color: #4b4f4d; font-size: 31px; line-height: 1; font-weight: 950; letter-spacing: 0; }
+      .gallery-code { position: absolute; top: 82px; left: 8px; right: 8px; z-index: 2; text-align: center; color: var(--accent); font-size: 28px; line-height: 1; font-weight: 950; letter-spacing: 0; }
+      .gallery-avatar { position: absolute; left: 50%; top: 126px; z-index: 1; width: 96%; height: 176px; object-fit: contain; transform: translateX(-50%); }
+      .gallery-caption { min-height: 70px; padding: 11px 14px 10px; border-top: 1px solid #eef2f7; background: #fbfdff; }
+      .gallery-caption h2 { margin: 0 0 6px; color: #111827; font-size: 16px; line-height: 1.18; font-weight: 950; }
+      .gallery-caption h2 span { display: inline-block; margin-left: 3px; color: #62766e; font-size: 14px; font-weight: 850; }
+      .gallery-caption p { margin: 0; color: #64748b; font-size: 13px; line-height: 1.35; font-weight: 700; }
+      .detail-overlay { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(28, 40, 32, .36); backdrop-filter: blur(6px); }
+      .detail-overlay.open { display: flex; }
+      .detail-panel { position: relative; width: min(980px, calc(100vw - 32px)); max-height: min(760px, calc(100vh - 32px)); overflow: auto; border: 1px solid #d9e5ef; border-radius: 18px; background: #fffdf8; box-shadow: 0 28px 80px rgba(25, 36, 29, .22); }
+      .detail-close { position: sticky; top: 14px; float: right; z-index: 4; width: 42px; height: 42px; margin: 14px 14px 0 0; border: 1px solid #d9e5df; border-radius: 999px; background: rgba(255,255,255,.92); color: #35443a; font-size: 22px; font-weight: 850; cursor: pointer; }
+      .detail-close:hover { background: #f2f7f2; }
+      .detail-body { display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 22px; padding: 24px; }
+      .detail-hero { overflow: hidden; border: 1px solid #e3edf4; border-radius: 14px; background: #fff; }
+      .detail-visual { position: relative; height: 360px; background: linear-gradient(#fff, #fff 78%, #f7fafb); }
+      .detail-visual .gallery-type { top: 16px; font-size: 18px; }
+      .detail-visual .gallery-cn { top: 52px; font-size: 38px; }
+      .detail-visual .gallery-code { top: 96px; font-size: 34px; }
+      .detail-visual .gallery-avatar { top: 148px; width: 94%; height: 198px; }
+      .detail-meta { padding: 14px 16px 16px; border-top: 1px solid #eef2f7; background: #fbfdff; }
+      .detail-meta h2 { margin: 0 0 7px; color: #111827; font-size: 20px; line-height: 1.2; font-weight: 950; }
+      .detail-meta p { margin: 0; color: #64748b; font-size: 14px; line-height: 1.45; font-weight: 750; }
+      .detail-content { padding: 4px 4px 0; }
+      .detail-kicker { margin: 0 0 8px; color: #2f8f42; font-size: 14px; line-height: 1.3; font-weight: 950; }
+      .detail-title { margin: 0 0 12px; color: #1f2d24; font-size: 28px; line-height: 1.12; font-weight: 950; letter-spacing: 0; }
+      .detail-essay { margin: 0 0 18px; color: #334155; font-size: 15px; line-height: 1.85; font-weight: 650; }
+      .detail-section-title { margin: 20px 0 12px; color: #27372e; font-size: 17px; line-height: 1.3; font-weight: 950; }
+      .detail-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 18px; }
+      .detail-fact { min-height: 74px; padding: 12px; border: 1px solid #e1eadf; border-radius: 12px; background: #fbfdf9; }
+      .detail-fact strong { display: block; margin-bottom: 5px; color: #62766e; font-size: 12px; font-weight: 950; }
+      .detail-fact span { color: #1f2937; font-size: 14px; line-height: 1.45; font-weight: 750; }
+      .detail-radar { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 18px; align-items: center; padding: 16px; border: 1px solid #e1eadf; border-radius: 14px; background: #fbfdf9; }
+      .detail-radar svg { width: 100%; max-width: 260px; aspect-ratio: 1; }
+      .radar-grid { fill: none; stroke: #d9e5df; stroke-width: 1; }
+      .radar-axis { stroke: #e2e8f0; stroke-width: 1; }
+      .radar-area { fill: rgba(47, 143, 66, .22); stroke: #2f8f42; stroke-width: 3; }
+      .radar-dot { fill: #2f8f42; stroke: #fff; stroke-width: 2; }
+      .radar-label { fill: #506458; font-size: 13px; font-weight: 850; }
+      .radar-list { display: grid; gap: 10px; }
+      .radar-row { display: grid; grid-template-columns: 72px 1fr 34px; gap: 10px; align-items: center; }
+      .radar-row-name { color: #243029; font-size: 13px; font-weight: 900; }
+      .radar-track { height: 8px; overflow: hidden; border-radius: 999px; background: #e8efe9; }
+      .radar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #70b981, #2f8f42); }
+      .radar-score { color: #60738c; font-size: 12px; font-weight: 950; text-align: right; }
+      .detail-tip { margin: 12px 0 0; color: #7a8a80; font-size: 13px; line-height: 1.55; font-weight: 650; }
+      @media (max-width: 980px) { .gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 700px) { .gallery-shell { width: calc(100vw - 24px); margin-top: 14px; } .gallery-head { grid-template-columns: 1fr; } .gallery-head h1 { font-size: 25px; } .gallery-note { text-align: left; } .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .gallery-visual { height: 274px; } .gallery-rarity { top: 8px; right: 8px; min-width: 50px; height: 21px; padding: 0 8px; font-size: 11px; } .gallery-type { top: 35px; font-size: 14px; } .gallery-cn { top: 60px; font-size: 23px; } .gallery-code { top: 88px; font-size: 22px; } .gallery-avatar { top: 126px; height: 140px; width: 98%; } .gallery-caption { min-height: 74px; padding: 9px 11px; } .gallery-caption h2 { margin-bottom: 4px; font-size: 15px; } .gallery-caption h2 span { margin-left: 0; font-size: 13px; } .gallery-caption p { font-size: 12px; } .detail-overlay { align-items: stretch; padding: 12px; } .detail-panel { width: 100%; max-height: calc(100vh - 24px); border-radius: 16px; } .detail-body { grid-template-columns: 1fr; gap: 16px; padding: 16px; } .detail-close { top: 10px; width: 38px; height: 38px; margin: 10px 10px 0 0; } .detail-visual { height: 320px; } .detail-visual .gallery-type { top: 14px; font-size: 16px; } .detail-visual .gallery-cn { top: 46px; font-size: 32px; } .detail-visual .gallery-code { top: 84px; font-size: 30px; } .detail-visual .gallery-avatar { top: 132px; height: 178px; } .detail-title { font-size: 23px; } .detail-facts { grid-template-columns: 1fr; } .detail-radar { grid-template-columns: 1fr; padding: 12px; } .detail-radar svg { margin: 0 auto; max-width: 238px; } }
+    </style>
+  </head>
+  <body>
+    <main class="gallery-shell">
+      <div class="gallery-head">
+        <div><h1>大学气质人物形象总览</h1><p>集中查看 25 个大学气质角色。看看你抽到的是热门款，还是隐藏款。</p></div>
+        <a class="secondary" href="./index.html">返回测试</a>
+      </div>
+      <p class="gallery-note">稀有度是图鉴娱乐分布，不代表真实录取难度；对标学校是气质方向，不是志愿建议。</p>
+      <div class="gallery-section-title">标准大学气质 · 25 种</div>
+      <div id="gallery" class="gallery-grid"></div>
+    </main>
+    <div id="detailOverlay" class="detail-overlay" aria-hidden="true">
+      <section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <button id="detailClose" class="detail-close" type="button" aria-label="关闭详情">×</button>
+        <div id="detailBody" class="detail-body"></div>
+      </section>
+    </div>
+    <script>
+const results = [
+        { code: "THU", cn: "清华", type: "清华型", name: "自律狠人", desc: "人生没有捷径，但可以拆成 17 个阶段目标", motto: "人生没有捷径，但可以拆成 17 个阶段目标。", persona: "你不是在学习，就是在优化学习系统。", crazy: "嘴上说还行，实际已经把明年计划排到了第四季度。", warning: "太松散、太玄学、太没有目标的环境，会让你怀疑人生是不是没开网格线。", color: "#46566c", map: { roll: 6, practical: 4 }, avatar: { role: "engineer", prop: "checklist" } },
+        { code: "PKU", cn: "北大", type: "北大型", name: "思想浓度过高", desc: "答案可以没有，问题必须高级", motto: "答案可以没有，问题必须高级。", persona: "你适合在湖边、讲座、深夜群聊里反复重构世界观。", crazy: "别人焦虑绩点，你焦虑人类文明为什么这样。", warning: "过于标准答案化的环境，会让你想站起来提问。", color: "#8b1f2d", map: { freedom: 5, romance: 3, chaos: 2 }, avatar: { role: "thinker", prop: "question" } },
+        { code: "FDU", cn: "复旦", type: "复旦型", name: "都市脑力社交人格", desc: "可以不睡，但不能没有观点", motto: "可以不睡，但不能没有观点。", persona: "在咖啡店写小论文，在群聊里重构世界观。", crazy: "deadline 前优雅崩溃，崩完还能输出 3000 字。", warning: "没有城市刺激、表达空间和信息密度，你会变得非常不像自己。", color: "#2e8b57", map: { social: 4, freedom: 3, practical: 2 }, avatar: { role: "urban", prop: "coffee" } },
+        { code: "SJTU", cn: "上交", type: "上交型", name: "理工实干卷王", desc: "少说两句，项目已经跑起来了", motto: "少说两句，项目已经跑起来了。", persona: "你适合在实验室、项目组、竞赛和实习之间高速切换。", crazy: "表面冷静，背后开了三个文档、两个仓库和一个待办看板。", warning: "只有空谈没有落地的环境，会让你想立刻打开需求文档。", color: "#315f8c", map: { practical: 5, roll: 3 }, avatar: { role: "builder", prop: "gear" } },
+        { code: "ZJU", cn: "浙大", type: "浙大型", name: "全能操作系统", desc: "能做，不吵，自己会扩容", motto: "能做，不吵，自己会扩容。", persona: "你什么都能接住一点，最后还真能接住很多。", crazy: "别人以为你很淡定，其实你后台进程已经开满。", warning: "单一路线、单一评价和单一人生，会让你的多线程天赋无处安放。", color: "#2c6a55", map: { roll: 2, practical: 2, freedom: 2, social: 1 }, avatar: { role: "runner", prop: "tabs" } },
+        { code: "NJU", cn: "南大", type: "南大型", name: "冷幽默观察家", desc: "安静不是没想法，是弹幕太多懒得发", motto: "安静不是没想法，是弹幕太多懒得发。", persona: "你适合在老校区、图书馆和深夜散步里慢慢变强。", crazy: "别人热血上头，你在旁边冷静补刀，一句话精准破防。", warning: "太吵、太浮、太急功近利的环境，会消耗你的观察力。", color: "#6b5b95", map: { romance: 3, freedom: 2, roll: 1 }, avatar: { role: "observer", prop: "book" } },
+        { code: "WHU", cn: "武大", type: "武大型", name: "浪漫胜负手", desc: "生活要有风景，考试也不能太离谱", motto: "生活要有风景，考试也不能太离谱。", persona: "你需要湖、树、风和一点点命运感，但关键时刻也能支棱起来。", crazy: "一边说算了随缘，一边在最后三天完成逆袭。", warning: "没有美感、没有空间、只有 KPI 的环境，会让你迅速枯萎。", color: "#c85566", map: { romance: 4, life: 2, freedom: 2 }, avatar: { role: "romantic", prop: "flower" } },
+        { code: "SCU", cn: "川大", type: "川大型", name: "人间烟火大心脏", desc: "天大的事，吃完这顿再说", motto: "天大的事，吃完这顿再说。", persona: "你适合热闹、好吃、有人情味的大学生活。", crazy: "焦虑归焦虑，饭还是要吃，朋友还是要见，人生还是能过。", warning: "太冷、太端、太没人味的环境，会让你想逃去食堂。", color: "#d87b32", map: { life: 5, social: 2, chaos: 2 }, avatar: { role: "foodie", prop: "bowl" } },
+        { code: "SYSU", cn: "中山", type: "中山型", name: "南方务实自由派", desc: "不必大声，但要清醒", motto: "不必大声，但要清醒。", persona: "你看起来温和，其实很知道自己要什么。", crazy: "别人激烈摇摆，你已经默默选了一条适合自己的路。", warning: "过度内耗、过度表演和过度虚荣，会让你失去耐心。", color: "#2f7a67", map: { practical: 3, freedom: 2, life: 2 }, avatar: { role: "south", prop: "fan" } },
+        { code: "ART", cn: "艺术", type: "艺术/传媒型", name: "灵感乱飞表达者", desc: "人生不适合太早被表格收编", motto: "人生不适合太早被表格收编。", persona: "你需要表达、作品、灵感和一点被误解的空间。", crazy: "灵感来时 3 小时不睡，灵感走时 3 天不想说话。", warning: "只有标准答案、没有作品出口的环境，会让你逐渐失去颜色。", color: "#c23b47", map: { romance: 4, social: 2, chaos: 3 }, avatar: { role: "artist", prop: "brush" } },
+        { code: "HKU", cn: "港校", type: "港校型", name: "deadline 优雅疯", desc: "体面可以掉线，deadline 不会", motto: "体面可以掉线，deadline 不会。", persona: "你适合高压、高速、高信息密度的国际化环境。", crazy: "一边崩溃一边排版，一边赶 due 一边保持头像体面。", warning: "太慢、太散、太没有机会密度的环境，会让你觉得人生没加载完。", color: "#f3cc4d", map: { practical: 4, social: 2, roll: 2 }, avatar: { role: "deadline", prop: "clock" } },
+        { code: "HIDE", cn: "隐藏王牌", type: "隐藏王牌型", name: "低调逆袭狠角色", desc: "光环可以没有，后劲必须很足", motto: "光环可以没有，后劲必须很足。", persona: "你不靠第一眼震场，但会在四年后突然让所有人重新认识你。", crazy: "不喊口号，不立人设，默默把能做的事一件件做完。", warning: "只看标签、不看成长性的环境，会低估你。", color: "#8d735b", map: { practical: 2, life: 2, roll: 2 }, avatar: { role: "hidden", prop: "hood" } },
+        { code: "BNU", cn: "师范", type: "师范型", name: "温柔秩序维护者", desc: "你不是爱管人，你只是看不得世界没教案", motto: "世界可以混乱，但板书必须清楚。", persona: "你自带讲清楚复杂事的能力，适合成为一群人的稳定锚点。", crazy: "别人发疯你做总结，做完总结自己再静音崩溃。", warning: "长期没人回应你的认真，会让你变成冷掉的热水袋。", color: "#6f9f78", map: { life: 3, social: 2, roll: 1 }, avatar: { role: "teacher", prop: "chalk" } },
+        { code: "FIN", cn: "财经", type: "财经型", name: "搞钱雷达常开", desc: "空气里有机会，你第一个闻到", motto: "浪漫要有，现金流也要有。", persona: "你对资源、路径和机会的敏感度很高，适合在城市里高速升级。", crazy: "嘴上说随便看看，手里已经开了三个实习表格。", warning: "太佛系的环境，会让你感觉人生收益率过低。", color: "#b98b2e", map: { practical: 5, social: 2 }, avatar: { role: "finance", prop: "coin" } },
+        { code: "LAW", cn: "政法", type: "政法型", name: "规则边界守夜人", desc: "你不是较真，你是在维护宇宙法条", motto: "没有边界的自由，不叫自由。", persona: "你适合辩论、判断、拆逻辑，也适合在关键时刻站出来说不对。", crazy: "别人吵情绪，你默默整理证据链。", warning: "长期待在不讲规则的环境，你会从人变成判例检索器。", color: "#334155", map: { roll: 2, practical: 3, freedom: 1 }, avatar: { role: "law", prop: "gavel" } },
+        { code: "MED", cn: "医科", type: "医科型", name: "人体说明书读者", desc: "你的温柔有时表现为非常严格", motto: "可以心软，但手不能抖。", persona: "你有耐心、抗压和责任感，适合在高强度里做长期主义者。", crazy: "别人熬夜叫堕落，你熬夜叫轮转。", warning: "如果环境只消耗你不修复你，你会把自己也当成病例。", color: "#3b82f6", map: { roll: 3, life: 2, practical: 2 }, avatar: { role: "doctor", prop: "stethoscope" } },
+        { code: "AGR", cn: "农林", type: "农林型", name: "自然系慢变量", desc: "你相信真正重要的东西都需要生长", motto: "别催，根系正在发力。", persona: "你适合和土地、生态、真实世界打交道，有一种慢慢变强的稳定感。", crazy: "别人赛博焦虑，你在观察一片叶子如何活下去。", warning: "太虚、太快、太悬浮的环境，会让你的根系缺氧。", color: "#5d8f47", map: { life: 4, romance: 2 }, avatar: { role: "nature", prop: "leaf" } },
+        { code: "LAN", cn: "外语", type: "外语型", name: "语境切换玩家", desc: "换一种语言，换一套表达权限", motto: "换一种语言，世界就换一个滤镜。", persona: "你对表达、文化和细微情绪很敏感，适合在跨语境里找自己。", crazy: "中文里说不出口的事，你换个语种突然很会讲。", warning: "单一语境和单一答案，会让你像被锁在同一个输入法里。", color: "#7c3aed", map: { freedom: 3, social: 3, romance: 2 }, avatar: { role: "language", prop: "speech" } },
+        { code: "AERO", cn: "航天", type: "航天型", name: "目标直指大气层外", desc: "你不是野心大，你只是坐标系比较高", motto: "眼前有题，头顶有星。", persona: "你适合硬核工程、长期项目和那些需要仰望的目标。", crazy: "别人做计划到周末，你做计划到发射窗口。", warning: "短平快和低天花板，会让你觉得空气稀薄。", color: "#1e3a8a", map: { roll: 4, practical: 3, romance: 1 }, avatar: { role: "aero", prop: "rocket" } },
+        { code: "SEA", cn: "海洋", type: "海洋型", name: "海大远航人", desc: "适合海大、远航和真实风浪", motto: "不是玄学蓝色人格，是想把世界往远处走一走。", persona: "你适合海洋、涉海、环境与跨区域流动，也适合把未知变成路线图。", crazy: "别人想去咖啡店自习，你想去海边上课，最好还能顺便出个航。", warning: "如果生活长期没有远方，你会在原地失去电量。", color: "#0284c7", map: { freedom: 3, romance: 3, life: 1 }, avatar: { role: "sea", prop: "boat" } },
+        { code: "DATA", cn: "数科", type: "数科型", name: "万物皆可建模", desc: "你看世界像看一张还没清洗的数据表", motto: "直觉很好，但先让我跑个模型。", persona: "你适合拆问题、找规律、用结构把混乱变得可计算。", crazy: "别人说感觉不对，你说样本量多少。", warning: "纯靠情绪决策的地方，会让你 CPU 过热。", color: "#0f766e", map: { roll: 2, practical: 4 }, avatar: { role: "data", prop: "chart" } },
+        { code: "NEWS", cn: "新闻", type: "新闻型", name: "现场感收集者", desc: "哪里有故事，哪里就有你的雷达", motto: "世界正在发生，我想在场。", persona: "你适合观察、记录、提问，也适合把复杂现场讲给别人听。", crazy: "别人吃瓜，你已经在做时间线。", warning: "没有信息密度的生活，会让你像断网。", color: "#ea580c", map: { social: 4, freedom: 2, chaos: 1 }, avatar: { role: "news", prop: "mic" } },
+        { code: "PSY", cn: "心理", type: "心理型", name: "情绪显微镜", desc: "你能听见别人没说出口的括号", motto: "每个反应背后都有来处。", persona: "你对人、关系和潜台词很敏感，适合处理复杂情绪现场。", crazy: "别人吵架你在分析依恋模式。", warning: "如果一直接住别人，别忘了也给自己一个容器。", color: "#a855f7", map: { romance: 2, social: 3, life: 2 }, avatar: { role: "psy", prop: "heart" } },
+        { code: "SPORT", cn: "体院", type: "体院型", name: "身体先于大脑出发", desc: "你的人生信条是先动起来再说", motto: "状态不好？先跑两圈。", persona: "你适合行动、竞技和真实反馈，越具体越能激活你。", crazy: "别人精神内耗，你物理排汗。", warning: "长期坐着空想，会让你像没充电。", color: "#16a34a", map: { life: 3, roll: 2, social: 1 }, avatar: { role: "sport", prop: "ball" } },
+        { code: "CITY", cn: "城市", type: "城市型", name: "资源导航仪", desc: "你不是现实，你是知道入口在哪", motto: "选择很重要，入口更重要。", persona: "你适合在大城市里连接资源、寻找机会、把地图越走越亮。", crazy: "别人迷茫，你在收藏咖啡店、展览、内推和地铁出口。", warning: "太封闭的环境，会让你的导航系统失灵。", color: "#475569", map: { practical: 4, social: 3 }, avatar: { role: "city", prop: "map" } },
+
+      ];
+
+      const galleryCopy = {
+        THU: ["卷麻了", "TODO!", "卷麻了", "TODO! 清华", "事情很多，但心里有谱"],
+        PKU: ["想太多", "WHY?", "想太多", "WHY? 北大", "问题很多，也不急着定论"],
+        FDU: ["锐评人", "HOTTAKE", "锐评人", "HOTTAKE 复旦", "观点很快，表达也在线"],
+        SJTU: ["开了开了", "RUN-IT", "开了开了", "RUN-IT 上交", "少说两句，先把事做了"],
+        ZJU: ["全都要", "ALL-IN", "全都要", "ALL-IN 浙大", "想试很多，也真能接住"],
+        NJU: ["嗯我看看", "HMM...", "嗯我看看", "HMM... 南大", "话不多，但看得很准"],
+        WHU: ["氛围感", "MOOD", "氛围感", "MOOD 武大", "风景一到，心情就亮了"],
+        SCU: ["饭搭子", "EAT-IT", "饭搭子", "EAT-IT 川大", "天大的事，吃完再说"],
+        SYSU: ["有点东西", "LOWKEY", "有点东西", "LOWKEY 中山", "不太张扬，但心里有数"],
+        ART: ["灵感发疯", "WOW!", "灵感发疯", "WOW! 中传/央美", "想法很多，作品会说话"],
+        HKU: ["DDL 战士", "DDL!", "DDL 战士", "DDL! 港大", "越到最后，越能稳住"],
+        HIDE: ["暗中发育", "ACE-X", "暗中发育", "ACE-X 隐藏王牌", "低调做事，慢慢让人看见"],
+        BNU: ["课代表来了", "CLASS", "课代表来了", "CLASS 北师大", "乱没关系，我来总结"],
+        FIN: ["搞钱人", "CASH!", "搞钱人", "CASH! 央财", "机会一响，你先听见"],
+        LAW: ["不合规", "NO-NO", "不合规", "NO-NO 中国政法", "不是抬杠，是守边界"],
+        MED: ["别慌我在", "DOC-ON", "别慌我在", "DOC-ON 协和", "能心软，也能稳住手"],
+        AGR: ["种地吧", "ROOTS", "种地吧", "ROOTS 中国农大", "慢慢生长，也很有力量"],
+        LAN: ["翻译腔", "SWITCH", "翻译腔", "SWITCH 北外", "换个语境，突然会说"],
+        AERO: ["上天了", "UPUP!", "上天了", "UPUP! 北航", "目标不在眼前，在大气层外。"],
+        SEA: ["离岸了", "SAIL!", "离岸了", "SAIL! 中国海大", "想去远处，也能稳住方向"],
+        DATA: ["样本量呢", "N=?", "样本量呢", "N=? 中科大", "先别感觉，样本量多少"],
+        NEWS: ["在现场", "LIVE", "在现场", "LIVE 中传", "你总想知道事情原委"],
+        PSY: ["你还好吗", "RUOK?", "你还好吗", "RUOK? 华东师大", "很会照顾别人的感受"],
+        SPORT: ["先动了", "GOGO", "先动了", "GOGO 北体", "想太多时，先跑起来"],
+        CITY: ["地图全开", "MAP!", "地图全开", "MAP! 同济", "路很多，你总能找到入口"]
+      };
+
+      const rarityMap = {
+        THU: [2.42, "rare"],
+        PKU: [4.09, "uncommon"],
+        FDU: [5.12, "common"],
+        SJTU: [2.41, "rare"],
+        ZJU: [5.57, "common"],
+        NJU: [4.09, "uncommon"],
+        WHU: [4.15, "uncommon"],
+        SCU: [3.94, "uncommon"],
+        SYSU: [5.01, "common"],
+        ART: [4.25, "uncommon"],
+        HKU: [4.83, "uncommon"],
+        HIDE: [5.35, "common"],
+        BNU: [4.50, "uncommon"],
+        FIN: [1.87, "rare"],
+        LAW: [4.34, "uncommon"],
+        MED: [5.05, "common"],
+        AGR: [2.37, "rare"],
+        LAN: [4.79, "uncommon"],
+        AERO: [4.11, "uncommon"],
+        SEA: [4.01, "uncommon"],
+        DATA: [2.06, "rare"],
+        NEWS: [3.71, "uncommon"],
+        PSY: [4.64, "uncommon"],
+        SPORT: [4.46, "uncommon"],
+        CITY: [2.87, "rare"]
+      };
+
+      const galleryLineMap = {
+        THU: "嘴上没卷，手里全是进度条。",
+        PKU: "别人答题，你先质疑题目。",
+        FDU: "观点一上桌，咖啡都得让座。",
+        SJTU: "先别开会，先把第一版跑起来。",
+        ZJU: "什么都想试，偏偏还真接得住。",
+        NJU: "话不多，但一句就能把弹幕关掉。",
+        WHU: "风一吹，人生自动加滤镜。",
+        SCU: "天大的事，吃完这顿再说。",
+        SYSU: "低调不是没货，是懒得开屏。",
+        ART: "灵感来了，表格当场失业。",
+        HKU: "DDL 越近，人越清醒。",
+        HIDE: "后台发育，前台突然惊艳。",
+        BNU: "群聊一乱，你就想画重点。",
+        FIN: "机会一响，你的雷达先醒。",
+        LAW: "不是抬杠，是边界感上线。",
+        MED: "关键时刻，你是真的能顶上。",
+        AGR: "不急着开花，先把根扎稳。",
+        LAN: "换个语境，突然很会说。",
+        AERO: "目标不在眼前，在大气层外。",
+        SEA: "坐不住，是想去更远的地方。",
+        DATA: "先别感觉，样本量呢？",
+        NEWS: "哪里有事，你就想去看个明白。",
+        PSY: "一句“没事”，你能听出三层意思。",
+        SPORT: "想太多时，先动起来。",
+        CITY: "地图一开，入口就亮了。"
+      };
+
+      function galleryLine(code, copy) {
+        return galleryLineMap[code] ?? `${copy[4]}。`;
+      }
+
+      const avatarVersion = "20260603-zju-clean";
+      function avatarPath(code) {
+        return `./assets/avatars/${code}.png?v=${avatarVersion}`;
+      }
+
+      function galleryCardHtml(r) {
+        const copy = galleryCopy[r.code] ?? [r.cn, r.code, r.name, r.code + " " + r.cn, r.desc];
+        const rarity = rarityMap[r.code] ?? [2.50, "uncommon"];
+        return `
+          <section class="gallery-card" data-code="${r.code}" role="button" tabindex="0" aria-label="查看 ${copy[3]} 详情">
+            <div class="gallery-visual">
+              <div class="gallery-rarity rare-${rarity[1]}">${rarity[0].toFixed(2)}%</div>
+              <div class="gallery-type">你的大学气质是：</div>
+              <div class="gallery-cn">${copy[0]}</div>
+              <div class="gallery-code">${copy[1]}</div>
+              <img class="gallery-avatar" src="${avatarPath(r.code)}" alt="${r.type}${r.name}人物形象" loading="lazy" />
+            </div>
+            <div class="gallery-caption">
+              <h2>${copy[3]}<span>｜${copy[2]}</span></h2>
+              <p>${galleryLine(r.code, copy)}</p>
+            </div>
+          </section>`;
+      }
+
+      const radarDimensions = [
+        ["学习劲头", ["roll", "practical"]],
+        ["快乐续航", ["life", "freedom"]],
+        ["找路能力", ["practical", "social"]],
+        ["社交开关", ["social", "chaos"]],
+        ["生活滤镜", ["romance", "freedom"]]
+      ];
+
+      function roleRadarItems(r) {
+        const raw = radarDimensions.map(([, keys]) => keys.reduce((sum, key) => sum + (r.map[key] ?? 0), 0));
+        const min = Math.min(...raw);
+        const max = Math.max(...raw);
+        return radarDimensions.map(([name], index) => {
+          const value = max === min ? 72 : Math.round(44 + ((raw[index] - min) / (max - min)) * 48);
+          return { name, value: Math.max(38, Math.min(96, value)) };
+        });
+      }
+
+      function radarAxisPoint(index, total, radius = 112, cx = 150, cy = 150) {
+        const angle = -Math.PI / 2 + index * 2 * Math.PI / total;
+        return { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius, angle };
+      }
+
+      function radarPolygonPoints(items, radius = 104, cx = 150, cy = 150) {
+        return items.map((item, index) => {
+          const angle = -Math.PI / 2 + index * 2 * Math.PI / items.length;
+          const distance = radius * (item.value / 100);
+          return `${(cx + Math.cos(angle) * distance).toFixed(1)},${(cy + Math.sin(angle) * distance).toFixed(1)}`;
+        }).join(" ");
+      }
+
+      function detailRadarHtml(r) {
+        const items = roleRadarItems(r);
+        const grid = [0.25, 0.5, 0.75, 1].map(level => {
+          const points = items.map((_, index) => {
+            const point = radarAxisPoint(index, items.length, 104 * level);
+            return `${point.x.toFixed(1)},${point.y.toFixed(1)}`;
+          }).join(" ");
+          return `<polygon class="radar-grid" points="${points}"></polygon>`;
+        }).join("");
+        const axes = items.map((item, index) => {
+          const end = radarAxisPoint(index, items.length, 112);
+          const label = radarAxisPoint(index, items.length, 122);
+          const anchor = Math.abs(Math.cos(label.angle)) < 0.25 ? "middle" : (Math.cos(label.angle) > 0 ? "start" : "end");
+          const dy = Math.sin(label.angle) > 0.4 ? 14 : (Math.sin(label.angle) < -0.4 ? -4 : 4);
+          return `
+            <line class="radar-axis" x1="150" y1="150" x2="${end.x.toFixed(1)}" y2="${end.y.toFixed(1)}"></line>
+            <text class="radar-label" x="${label.x.toFixed(1)}" y="${(label.y + dy).toFixed(1)}" text-anchor="${anchor}">${item.name}</text>
+          `;
+        }).join("");
+        const dots = items.map((item, index) => {
+          const point = radarAxisPoint(index, items.length, 104 * (item.value / 100));
+          return `<circle class="radar-dot" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4"></circle>`;
+        }).join("");
+        const rows = items.map(item => `
+          <div class="radar-row">
+            <div class="radar-row-name">${item.name}</div>
+            <div class="radar-track"><div class="radar-fill" style="width:${item.value}%"></div></div>
+            <div class="radar-score">${item.value}</div>
+          </div>
+        `).join("");
+        return `
+          <svg viewBox="0 0 300 300" role="img" aria-label="${r.type}${r.name}雷达图">
+            ${grid}
+            ${axes}
+            <polygon class="radar-area" points="${radarPolygonPoints(items)}"></polygon>
+            ${dots}
+          </svg>
+          <div class="radar-list">${rows}</div>
+        `;
+      }
+
+      const resultEssayMap = {
+        THU: "你嘴上说没卷，手里的进度条倒是很会出卖人。别人还在“明天开始”，你已经把明天拆成上午、下午和睡前复盘。你不是天生不累，只是太知道事情悬着有多烦。大学里你最容易变成那种群里不说话，但最后文件命名最规范的人。有点像那种嘴上说我随便看看，结果已经把备选方案排到第三页的人。朋友找你帮忙时，通常不是因为你最会安慰人，而是因为你真的能把烂摊子收住。",
+        PKU: "你不是来找标准答案的，你是来看看标准答案凭什么标准。别人问这题选什么，你可能先问这题为什么这样问。你需要一点自由、一点争论、一些深夜聊到跑题的朋友。看起来是在想太多，其实是在给世界重新打补丁。你需要的不是一句正确答案，而是一个允许你把答案拆开重装的地方。测到这个结果，大概率说明你不怕复杂，甚至有点享受把简单问题聊到天亮。",
+        FDU: "你对信息密度有瘾。一个下午最好能塞进咖啡、观点、八卦、讲座和一点体面崩溃。你不是非要赢辩论，但很难忍住不把话题拧得更尖一点。大学对你来说不是象牙塔，是大型实时弹幕现场。你喜欢那种人和信息都很密的地方，最好走两步就能撞见新话题。朋友眼里的你，可能是“刚说完随便聊聊，下一秒就开始输出观点”的人。",
+        SJTU: "你不太吃“我们先务虚一下”这套。能动手就动手，能跑 demo 就别空喊口号。你看起来冷静，其实心里已经开了项目文档、分工表和截止时间。别人还在问有没有必要，你已经在想第一版怎么交。你不一定爱表现，但很在意事情有没有推进。最适合你的大学生活，是少一点悬浮口号，多一点能真实落地的项目和队友。",
+        ZJU: "你的人生像一台后台很忙的电脑：窗口很多，居然大多还没卡死。你不是贪心，是每条路看起来都值得试一下。大学四年最适合你的状态，是一边扩容一边筛选，最后发现自己会的东西比想象中多得离谱。你最怕的不是忙，而是忙完以后发现自己只是原地转圈。最后这张图发出去，朋友大概率会说：这不就是你吗，什么都想试，还真能试出点东西。",
+        NJU: "你不一定爱抢话，但你很会看。很多场合你像静音模式，心里弹幕却已经刷完三屏。你最可怕的地方不是输出多，而是偶尔一句话刚好扎在重点上。别人以为你没参与，其实你已经把整件事看完了。你适合那种能让人慢下来、把问题想透的地方。你不是冷，只是很多话没必要立刻说，等说出来的时候，通常就已经很准了。",
+        WHU: "你很容易被一个地方的气味、光线和风打动。路边的树、傍晚的云、下课后那几分钟，都可能突然把你拉回某个夏天。你不是只会浪漫，关键时刻也会支棱，只是人生不能一直像无窗自习室。对你来说，大学不只是上课和考试，也是一段会被天气和风景记住的时间。别人可能记得绩点，你会记得某条路、某顿饭、某个突然觉得人生还行的下午。",
+        SCU: "你的人生底层逻辑里有一条：先把人过舒服，再谈远大理想。你不一定最早冲出去，但很会让自己不断电。饭吃好了、朋友在旁边、日子有点热气，你反而能把难事慢慢做完。你不是佛，是续航管理大师。测到这个结果，说明你大概很懂“活着”这件事本身也需要经营。别小看这种能力，很多人跑得很快，但你更像能跑很久的人。",
+        SYSU: "你不爱把野心贴在脸上，甚至有点懒得解释。别人忙着展示，你更关心这条路到底顺不顺手。你看起来温和，其实心里很清楚什么能要、什么没必要。属于那种不怎么开屏，但一翻背包发现东西很齐的人。你适合不太喧哗、但机会和自由都在的地方。熟悉你的人会知道，你不是没想法，只是懒得把每一步都演给别人看。",
+        ART: "你的脑子不适合长期坐在表格里上班。灵感来的时候像突然开闸，没感觉的时候也是真的点不着。你需要作品，需要表达，也需要一点别人暂时看不懂的空间。别急着把自己修成标准件，你本来就不是量产款。测到这个结果，不代表你每天都很有灵感，而是你很难接受人生只剩流程。你需要一个可以试错、可以怪、也可以突然惊艳的地方。",
+        HKU: "你和 DDL 的关系很微妙：嘴上骂它，身体又被它召唤上线。越到最后，越能把散掉的自己捡回来。你不是喜欢高压，是高压会把你的潜能逼到前台。体面可以短暂离线，交付最好准时出现。你适合节奏快、信息密、机会多的环境，虽然会累，但也会被逼出一些自己都没想到的能力。朋友看到这个结果，可能会想起你半夜还在改排版的样子。",
+        HIDE: "你不是一出场就自带追光的人，更像那种一直在后台更新版本的人。别人忙着亮相，你在攒经验、补短板、等一个让大家重新认识你的瞬间。别急着证明自己，暗中发育不是没存在感，是在憋大招。你的大学气质不靠第一眼赢，而靠后劲。很多人一开始没看出来，等回头再看，才发现你已经悄悄把路走宽了。",
+        BNU: "你身上有一种“我来理一下”的本能。场面乱了想画重点，话题散了想拉回来，别人慌的时候你先把逻辑顺一遍。你不是天生爱管人，只是看不得世界乱成没标题的 PPT。温柔可以给，边界也要留。你适合能把复杂事情讲清楚、也能认真对待人的地方。朋友可能嘴上嫌你像课代表，但真到混乱时，第一个想起的还是你。",
+        FIN: "你对机会的声音比别人敏感一点。实习、资源、城市、路径，别人还在随便看看，你已经开始判断值不值得上车。你不一定只想搞钱，但你很知道理想不能只靠热血供电。浪漫可以有，现金流也最好别断。测到这个结果，说明你不是冷冰冰的现实派，而是很早就明白资源和选择有多重要。你适合那种入口多、节奏快、能让人不断升级的地方。",
+        LAW: "你不是爱抬杠，是很难忍受一件事没边界。大家都说算了的时候，你可能还在心里补一句：可是它不对。你擅长把情绪现场拆成规则、证据和逻辑链。这个世界有时候很乱，而你负责提醒它别太离谱。你适合有讨论、有规则、有判断的地方，也适合在关键时刻站出来说一句“不太对”。别人觉得你较真，但很多时候正是这种较真救了场。",
+        MED: "你看起来像能扛很多事，实际上也会累，只是关键时刻习惯先稳住场面。别人慌的时候，你会先把手放稳，把流程走完，再晚一点才想起自己也需要休息。你不是没有情绪，是把情绪先放进了值班室。测到这个结果，说明你身上有一种很硬的温柔。你适合长期主义，也适合那些不靠热闹取胜、但真的需要责任感的路。",
+        AGR: "你相信真正重要的东西都不是一夜长出来的。别人追热点，你更关心一件事怎么扎根、怎么活下去、怎么慢慢变好。太快太悬浮的环境会耗你，真实一点的泥土、季节和长期反馈，反而能把你养回来。你不是慢半拍，是更相信慢变量。大学对你来说，最好不是一场短跑，而是一个能让人慢慢长出根的地方。",
+        LAN: "你对语气、语境和那些没说满的话很敏感。换一种语言，像换了一盏灯，有些东西突然能说出口了。你迷人的地方不是会多少词，而是能在不同表达之间找到缝隙。别人只听字面，你还听到了括号里的情绪。你适合跨文化、跨语境、跨圈层的地方，因为你不是只想把话翻译出来，你还想知道一句话为什么这样说。",
+        AERO: "你不是看到发射就热血上头，你是需要一个足够远的目标来安放认真。今天可能看不到结果，但只要坐标够高，你反而愿意慢慢算、慢慢做。短平快不太够你用，你需要的是那种几年后回头看才知道自己飞了多远的事。你适合长线项目，也适合那些需要耐心、精度和一点仰望感的路。别人看眼前，你会忍不住看更远一点。",
+        SEA: "你不太适合一直困在同一张桌子前。远方、流动、风浪、未知路线，都会让你重新有电。你不是单纯想逃离现实，而是很想知道世界还有多少种活法。别人找固定座位，你会先看出口通向哪里。测到这个结果，说明你需要一点开阔感。大学对你来说，不该只是一个校园，更像一个能把你带向远处的码头。",
+        DATA: "你不太迷信一句“我感觉”。别人凭直觉下结论，你已经在心里问样本量、变量和偏差。你喜欢把乱糟糟的问题拆开、清洗、建模，再给出一个冷静但好用的答案。你的浪漫可能藏在一张终于跑通的图里。你适合能让你把问题算明白、讲清楚、做扎实的地方。朋友可能觉得你理性，但你自己知道，秩序感也是一种安全感。",
+        NEWS: "你不是单纯想看热闹，你是想知道热闹为什么会发生。哪里有现场、哪里有故事、哪里有人没把话说完，你就容易被吸过去。别人吃瓜吃到结论，你还在补时间线和人物关系。你要的不是瓜，是来龙去脉。你适合信息流动很快、能接触真实世界的地方。测到这个结果的人，通常很难对“正在发生的事”完全无动于衷。",
+        PSY: "你很容易听见别人没说出口的话。一句没事、一个停顿、一次突然转移话题，你都可能在心里标注一下。这个能力会让你很会照顾人，也会让你偶尔太累。别总替别人翻译情绪，你自己也需要被好好听见。你适合能认真讨论人、关系和内心秩序的地方。别人觉得你敏感，你可以把它理解成：你的接收器确实比别人开得早一点。",
+        SPORT: "你适合先动起来。想太多的时候，身体往往比脑子更诚实。跑一跑、打一场、出点汗，很多卡住的东西会自己松开。你不是没深度，只是你的重启键不在脑内会议室，而在真实的动作里。测到这个结果，说明你需要具体目标和即时反馈。比起一直坐着分析人生，你更容易在行动里把状态找回来。",
+        CITY: "你很会看地图，不只是地理上的地图。机会在哪、入口在哪、谁能连接谁、哪条路更顺，你会一点点摸清。别人还在原地问怎么办，你已经开始研究附近有没有第二个入口。你的天赋是把陌生地方走成熟人局。你适合资源密度高、选择很多的环境，因为你会从混乱里摸出路线。别人看到一座城市，你看到的是入口、路线和下一种可能。"
+      };
+
+      function detailEssay(r, copy) {
+        return resultEssayMap[r.code] ?? `${r.persona}${r.crazy}${r.warning}`;
+      }
+
+      function detailHtml(r) {
+        const copy = galleryCopy[r.code] ?? [r.cn, r.code, r.name, r.code + " " + r.cn, r.desc];
+        const rarity = rarityMap[r.code] ?? [2.50, "uncommon"];
+        return `
+          <aside class="detail-hero">
+            <div class="detail-visual">
+              <div class="gallery-rarity rare-${rarity[1]}">${rarity[0].toFixed(2)}%</div>
+              <div class="gallery-type">你的大学气质是：</div>
+              <div class="gallery-cn">${copy[0]}</div>
+              <div class="gallery-code">${copy[1]}</div>
+              <img class="gallery-avatar" src="${avatarPath(r.code)}" alt="${r.type}${r.name}人物形象" />
+            </div>
+            <div class="detail-meta">
+              <h2>${copy[3]}｜${copy[2]}</h2>
+              <p>${galleryLine(r.code, copy)}</p>
+            </div>
+          </aside>
+          <div class="detail-content">
+            <p class="detail-kicker">${r.type} · ${r.name}</p>
+            <h2 id="detailTitle" class="detail-title">${r.motto}</h2>
+            <p class="detail-essay">${detailEssay(r, copy)}</p>
+            <div class="detail-facts">
+              <div class="detail-fact"><strong>适配气质</strong><span>${r.persona}</span></div>
+              <div class="detail-fact"><strong>容易上头</strong><span>${r.crazy}</span></div>
+              <div class="detail-fact"><strong>友情提示</strong><span>${r.warning}</span></div>
+            </div>
+            <h3 class="detail-section-title">角色气质雷达</h3>
+            <div class="detail-radar">${detailRadarHtml(r)}</div>
+            <p class="detail-tip">雷达图展示的是这个人物角色的气质倾向，不代表真实学校评价，也不是志愿建议。</p>
+          </div>
+        `;
+      }
+
+      function openDetail(code) {
+        const r = results.find(item => item.code === code);
+        if (!r) return;
+        document.getElementById("detailBody").innerHTML = detailHtml(r);
+        document.getElementById("detailOverlay").classList.add("open");
+        document.getElementById("detailOverlay").setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDetail() {
+        document.getElementById("detailOverlay").classList.remove("open");
+        document.getElementById("detailOverlay").setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      document.getElementById('gallery').innerHTML = results.map(galleryCardHtml).join('');
+      document.getElementById('gallery').addEventListener('click', event => {
+        const card = event.target.closest('.gallery-card');
+        if (card) openDetail(card.dataset.code);
+      });
+      document.getElementById('gallery').addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        const card = event.target.closest('.gallery-card');
+        if (!card) return;
+        event.preventDefault();
+        openDetail(card.dataset.code);
+      });
+      document.getElementById('detailClose').addEventListener('click', closeDetail);
+      document.getElementById('detailOverlay').addEventListener('click', event => {
+        if (event.target.id === 'detailOverlay') closeDetail();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeDetail();
+      });
+    </script>
+  </body>
+</html>
